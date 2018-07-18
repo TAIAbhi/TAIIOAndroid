@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_findsuggestions"
+        android:icon="@drawable/search"
+        android:title="View Suggestions"/>
+    <item
+        android:id="@+id/menu_addsuggestions"
+        android:icon="@drawable/addsugg"
+        android:title="Add Suggestions"/>
+    <item
+        android:id="@+id/menu_mydetails"
+        android:icon="@drawable/mydets"
+        android:title="My Details"/>
+    <item
+        android:id="@+id/menu_feedback"
+        android:icon="@drawable/feedback"
+        android:title="Feedback"/>
+</menu>

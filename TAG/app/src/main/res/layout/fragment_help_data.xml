@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorlightgrey"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/sv_text_content"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <!--<ImageView-->
+             <!--android:layout_gravity="center_horizontal"-->
+             <!--android:src="@drawable/headerlogo"-->
+             <!--android:adjustViewBounds="true"-->
+             <!--android:layout_width="280dp"-->
+             <!--android:layout_height="80dp" />-->
+
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:id="@+id/iv_helpimg"
+            android:scaleType="centerCrop"
+            android:layout_width="275dp"
+            android:layout_height="400dp" />
+
+        <TextView
+            android:visibility="gone"
+            android:layout_margin="10dp"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+            android:id="@+id/tv_data"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/ll_video_content"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+            android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+            android:id="@+id/youtube_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

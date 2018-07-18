@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/colorwhite"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:padding="10dp"
+        android:id="@+id/ll_categoryholder"
+        android:background="@color/colorlightgrey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_holder_hangout"
+            android:layout_weight="1"
+            android:padding="3dp"
+            android:background="@drawable/black_curve_bg"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorwhite"
+                android:layout_gravity="center_vertical"
+                android:text="Hangouts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_holder_services"
+            android:layout_marginLeft="2dp"
+            android:padding="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/black_curve_bg"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorwhite"
+                android:layout_gravity="center_vertical"
+                android:text="Services"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_holder_shopping"
+            android:layout_marginLeft="2dp"
+            android:padding="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/black_curve_bg"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorwhite"
+                android:layout_gravity="center_vertical"
+                android:text="Shopping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/tv_select_category"
+        android:text="Please select a category"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/ll_categoryholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <ImageView
+        android:visibility="visible"
+        android:id="@+id/tag_select"
+        android:layout_margin="30dp"
+        android:layout_below="@id/tv_select_category"
+        android:src="@drawable/tag_select"
+        android:adjustViewBounds="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/tag_success"
+        android:layout_margin="30dp"
+        android:layout_below="@id/tv_select_category"
+        android:src="@drawable/tag_success"
+        android:adjustViewBounds="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+        <ScrollView
+            android:layout_below="@id/tv_select_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/rl_formsholder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:padding="10dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_marginRight="90dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_cat_icon"
+                        android:padding="6dp"
+                        android:src="@drawable/service_b"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                    <TextView
+                        android:id="@+id/tv_category"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colordarkblue"
+                        android:textSize="16dp"
+                        android:text="SERVICES"
+                        android:maxWidth="200dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentRight="true"
+                        android:id="@+id/ll_city_selector"
+                        android:background="@drawable/blue_curve_bg"
+                        android:layout_width="90dp"
+                        android:gravity="center"
+                        android:layout_height="36dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_citynamee"
+                            android:padding="5dp"
+                            android:textSize="12dp"
+                            android:textColor="@color/colorwhite"
+                            android:text="Mumbai"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <ImageView
+                            android:layout_marginTop="2dp"
+                            android:src="@drawable/dd"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <!--business name-->
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/input_layout_businessname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:text=""
+                        android:id="@+id/input_businessname"
+                        android:inputType="text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Business Name (Individual or Company)" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!--location-->
+
+                <LinearLayout
+                    android:weightSum="10"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_weight="9"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/input_layout_location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/input_location"
+                        android:inputType="text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Location" />
+
+                </android.support.design.widget.TextInputLayout>
+                    
+                    <ImageView
+                        android:id="@+id/iv_addlocation"
+                        android:layout_marginBottom="6dp"
+                        android:layout_gravity="bottom"
+                        android:src="@drawable/location_ad"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:padding="2dp"
+                        android:layout_height="40dp" />
+                    
+                </LinearLayout>
+
+                <!--CHeckboxes local and chain-->
+
+                <LinearLayout
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+               <LinearLayout
+                   android:orientation="vertical"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content">
+
+                   <TextView
+                       android:textColor="@color/colorblue"
+                       android:layout_marginBottom="6dp"
+                       android:layout_marginLeft="10dp"
+                       android:textStyle="bold"
+                       android:text="Serves"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+
+                   <Switch
+                       android:checked="true"
+                       android:id="@+id/switch_islocal"
+                       android:switchMinWidth="130dp"
+                       android:track="@drawable/swicth_local"
+                       android:thumb="@drawable/selector"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+
+                   <TextView
+                       android:textColor="@color/colorblue"
+                       android:id="@+id/tv_cityname"
+                       android:layout_marginTop="4dp"
+                       android:layout_marginLeft="10dp"
+                       android:text="Mumbai"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+
+               </LinearLayout>
+
+
+               <LinearLayout
+                   android:orientation="vertical"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content">
+
+                   <TextView
+                       android:textColor="@color/colorblue"
+                       android:layout_marginBottom="6dp"
+                       android:layout_marginLeft="30dp"
+                       android:textStyle="bold"
+                       android:text="Location"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+
+                   <Switch
+                        android:layout_marginLeft="20dp"
+                        android:id="@+id/switch_ischain"
+                        android:switchMinWidth="130dp"
+                        android:track="@drawable/swicth_ischain"
+                        android:thumb="@drawable/selector"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+               </LinearLayout>
+                    <!---->
+
+                </LinearLayout>
+
+                <!--business contact-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_marginTop="6dp"
+                    android:id="@+id/input_layout_contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:text=""
+                        android:id="@+id/input_contact"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Contact number (Not Mandatory)" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/ll_found_on_holder"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/check_tag"
+                        android:layout_width="32dp"
+                        android:layout_height="18dp" />
+
+                    <TextView
+                        android:labelFor="@id/check_tag"
+                        android:text="TAG inspired"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!--subcategories group-->
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/ll_sp_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <Spinner
+                        android:layout_marginTop="6dp"
+                        android:id="@+id/sp_subcat_groups"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"></Spinner>
+
+                    <View
+                        android:layout_marginTop="2dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:background="@android:color/darker_gray"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"></View>
+                </LinearLayout>
+
+                <!--sub cat-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/input_layout_subcat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/input_subcat"
+                        android:inputType="text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Sub Category" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <!--about-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/input_layout_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/input_about"
+                        android:inputType="textMultiLine"
+                        android:lines="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Reason for suggestion" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_suggestion_by"
+                    android:visibility="gone"
+                    android:text=""
+                    android:textColor="@color/colorblue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+                <Button
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/btn_addsuggestion"
+                    android:layout_marginTop="10dp"
+                    android:text="Add suggestions"
+                    android:textColor="@color/colorwhite"
+                    android:backgroundTint="@color/colordarkblue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+
+</RelativeLayout>

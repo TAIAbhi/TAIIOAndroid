@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_marginBottom="4dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:background="@color/colorblue"
+        android:layout_width="match_parent"
+        android:minHeight="80dp"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textStyle="bold"
+                android:textColor="@color/colorwhite"
+                android:text="DELETE  "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:src="@drawable/delete"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/viewForeground"
+        android:background="@color/colorlightgrey"
+        android:layout_width="match_parent"
+        android:minHeight="80dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:minHeight="80dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_notification_icon"
+                android:src="@drawable/mem"
+                android:layout_margin="10dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="10dp"
+                    android:background="@color/colorgrey"
+                    android:layout_height="40dp"></LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginRight="14dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_notification_category"
+                        android:text="Hospital - Pedriatician"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_notification_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Location - (Bandra West)"
+                        android:textColor="@color/colorblue"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_notification_time_sent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:textStyle="italic"
+                        android:textSize="10dp"
+                        android:text="20 Mao 2018"/>
+
+                    <TextView
+                        android:id="@+id/tv_notification_requester"
+                        android:layout_marginTop="6dp"
+                        android:textStyle="bold"
+                        android:text="Upasna (Ref - Abhi)"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/tv_notification_date"
+                        android:text="20 APR 2018, 2.30pm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    android:layout_marginRight="18dp"
+                    android:paddingBottom="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:src="@drawable/find"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+
+                    <TextView
+                        android:id="@+id/tv_targett"
+                        android:text="4/5"
+                        android:textColor="@color/colorblue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</FrameLayout>

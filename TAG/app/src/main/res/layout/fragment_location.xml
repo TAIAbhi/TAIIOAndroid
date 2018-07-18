@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:clickable="true"
+    android:background="@color/colorlightblue"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_etholders"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical"
+        android:background="@color/colorblue"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_suburb"
+            android:background="@color/colorwhite"
+            android:padding="6dp"
+            android:inputType="text"
+            android:hint="Add Suburb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/et_location"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorwhite"
+            android:padding="6dp"
+            android:inputType="text"
+            android:hint="Add Location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyc_location"
+        android:layout_below="@id/ll_etholders"
+        android:layout_above="@id/btn_addlocation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+
+
+    <Button
+        android:backgroundTint="@color/colordarkblue"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="4dp"
+        android:text="Add location"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btn_addlocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

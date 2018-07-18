@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:padding="10dp"
+        android:background="@color/colorlightblue"
+        android:id="@+id/ll_filter_holder"
+        android:layout_below="@id/ll_categoryholder"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:id="@+id/ll_filter_block"
+            android:layout_marginTop="10dp"
+            android:padding="20dp"
+            android:background="@drawable/line_bg"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/et_filter_by_business"
+                android:padding="4dp"
+                android:hint="Find by business name"
+                android:background="@color/colorwhite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <AutoCompleteTextView
+                android:id="@+id/et_filter_by_microcat"
+                android:layout_marginTop="6dp"
+                android:padding="4dp"
+                android:hint="Find by Sub Category"
+                android:background="@color/colorwhite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <AutoCompleteTextView
+                android:id="@+id/et_filter_by_location"
+                android:layout_marginTop="6dp"
+                android:padding="4dp"
+                android:hint="Location Suburb / Area"
+                android:background="@color/colorwhite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Switch
+                    android:id="@+id/switch_local"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_gravity="center_vertical"
+                    android:text="Local"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/ll_city_selector"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/blue_curve_bg"
+                    android:layout_width="90dp"
+                    android:gravity="center"
+                    android:layout_height="36dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_cityname"
+                        android:padding="5dp"
+                        android:textSize="12dp"
+                        android:textColor="@color/colorwhite"
+                        android:text="Mumbai"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:layout_marginTop="2dp"
+                        android:src="@drawable/dd"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <AutoCompleteTextView
+                android:id="@+id/et_filter_by_contact"
+                android:layout_marginTop="6dp"
+                android:padding="4dp"
+                android:hint="Contact name or number"
+                android:background="@color/colorwhite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <AutoCompleteTextView
+                android:id="@+id/et_filter_by_source"
+                android:layout_marginTop="6dp"
+                android:padding="4dp"
+                android:hint="Source name or number"
+                android:background="@color/colorwhite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <LinearLayout
+                android:layout_marginTop="14dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <Button
+                    android:layout_gravity="right"
+                    android:id="@+id/btn_refresh"
+                    android:drawableLeft="@drawable/refresh_btn"
+                    android:text="  RESET"
+                    android:textColor="@color/colorwhite"
+                    android:backgroundTint="@color/colordarkblue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:layout_gravity="right"
+                    android:id="@+id/btn_search"
+                    android:text="  Search"
+                    android:drawableLeft="@drawable/search_btn"
+                    android:textColor="@color/colorwhite"
+                    android:backgroundTint="@color/colordarkblue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_sel_filter"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:background="@color/colorlightblue"
+                android:layout_marginLeft="30dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textStyle="bold"
+                android:text="FILTER"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:background="@color/colorlightblue"
+                android:src="@drawable/filter"
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

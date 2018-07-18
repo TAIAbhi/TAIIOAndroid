@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tag.tai.tag.Activities.MainActivity">
+
+    <android.support.v7.widget.Toolbar
+        xmlns:local="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:minHeight="?android:attr/actionBarSize"
+        android:background="@color/colorblack"
+        local:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        local:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <ImageView
+                android:id="@+id/iv_header_logo"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/headerlogo"
+                android:padding="6dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="46dp" />
+
+
+            <LinearLayout
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/tb_ranking"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ranking"
+                android:padding="6dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/tb_filter"
+                android:src="@drawable/filter"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                 android:padding="6dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp" />
+
+<RelativeLayout
+    android:id="@+id/tb_notification"
+    android:layout_width="40dp"
+    android:layout_height="40dp">
+
+    <ImageView
+        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bell"
+        android:padding="6dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp" />
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/rl_badge_holder"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/notification_badge"
+        android:layout_width="wrap_content"
+        android:minWidth="17dp"
+        android:layout_height="17dp">
+
+        <TextView
+            android:id="@+id/tv_badge_count"
+            android:textColor="@color/colorwhite"
+            android:layout_centerInParent="true"
+            android:text=""
+            android:padding="2dp"
+            android:textSize="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
+
+
+
+
+            <ImageView
+                android:id="@+id/tb_help"
+                android:src="@drawable/help"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:padding="4dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:layout_below="@id/toolbar"
+        android:id="@+id/container"
+        android:layout_above="@id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        app:menu="@menu/nav"
+        app:itemIconTint="@color/bottomnav_colors"
+        app:itemTextColor="@color/bottomnav_colors"
+        android:background="@color/colorblack"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"></android.support.design.widget.BottomNavigationView>
+
+
+    <include layout="@layout/loader"></include>
+
+
+</RelativeLayout>

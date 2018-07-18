@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "295524087587",
+    "firebase_url": "https://taiio-a76f3.firebaseio.com",
+    "project_id": "taiio-a76f3",
+    "storage_bucket": "taiio-a76f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295524087587:android:d3226719e8edcf9c",
+        "android_client_info": {
+          "package_name": "com.tag.tai.tag"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "295524087587-hd06lvrphpcvj9v2t8ttmthb8nhp644j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIedtONE_8tbmculLW7Ov5mFtFxACun0I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

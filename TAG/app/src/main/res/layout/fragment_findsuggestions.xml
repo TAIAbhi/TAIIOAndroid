@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorlightgrey"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:padding="10dp"
+        android:background="@color/colorlightgrey"
+        android:id="@+id/ll_categoryholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_holder_hangout"
+            android:layout_weight="1"
+            android:padding="3dp"
+            android:background="@drawable/black_curve_bg"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorwhite"
+                android:layout_gravity="center_vertical"
+                android:text="Hangouts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_holder_services"
+            android:layout_marginLeft="2dp"
+            android:padding="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/black_curve_bg"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorwhite"
+                android:layout_gravity="center_vertical"
+                android:text="Services"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_holder_shopping"
+            android:layout_marginLeft="2dp"
+            android:padding="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/black_curve_bg"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorwhite"
+                android:layout_gravity="center_vertical"
+                android:text="Shopping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/ll_category_sepearator"
+        android:layout_below="@id/ll_categoryholder"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colordarkgrey">
+
+    </View>
+
+    <LinearLayout
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/ll_category_sepearator"
+        android:id="@+id/ll_all_or_my_sugg_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/ll_my_suggestions"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/mysuggestion_bg_unselected"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/colorwhite"
+                android:layout_gravity="center_vertical"
+                android:text="My suggestions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_all_suggestions"
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:padding="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/allsuggestions_bg_selected"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/colorwhite"
+                android:layout_gravity="center_vertical"
+                android:text="All suggestions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_city_selector"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/blue_curve_bg"
+            android:layout_width="90dp"
+            android:gravity="center"
+            android:layout_height="36dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_cityname"
+                android:padding="5dp"
+                android:textSize="12dp"
+                android:textColor="@color/colorwhite"
+                android:text="Mumbai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:layout_marginTop="2dp"
+                android:src="@drawable/dd"
+                android:layout_width="10dp"
+                android:layout_height="10dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:id="@+id/recyc_allmysuggestions"
+        android:layout_below="@id/ll_all_or_my_sugg_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:id="@+id/recyc_allrequestedsuggestions"
+        android:layout_below="@id/ll_all_or_my_sugg_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/tv_nosuggestion"
+        android:visibility="gone"
+        android:textAlignment="center"
+        android:text="No suggestions available for the current selection."
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/ll_all_or_my_sugg_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab_add_suggestion"-->
+        <!--android:src="@drawable/requestsugg"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_margin="30dp"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
+
+    <ImageView
+        android:id="@+id/fab_add_suggestion"
+        android:src="@drawable/notif6"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="30dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_request_suggestions_option"
+        android:visibility="gone"
+        android:clickable="true"
+        android:layout_marginBottom="100dp"
+        android:layout_marginRight="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:padding="20dp"
+            android:orientation="vertical"
+            android:background="@color/colorlightblue"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_view_requests"
+
+                android:textStyle="bold"
+                android:text="View Requested Suggestions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_request_suggestion"
+                android:layout_marginTop="14dp"
+                android:textStyle="bold"
+                android:text="Request Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
