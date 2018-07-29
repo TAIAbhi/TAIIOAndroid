@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -46,7 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements SwipeCallback{
+public class HomeFragment extends Fragment implements SwipeCallback {
 
     private LinearLayout hangouts;
     private GestureDetector hangoutsdetector;
@@ -58,7 +56,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
     private GestureDetector shoppingdetector;
 
     SessionManager session;
-    TextView tv_servicescount,tv_hangoutscount,tv_shoppingcount;
+    TextView tv_servicescount, tv_hangoutscount, tv_shoppingcount;
 
     LinearLayout ll_city_selector;
     ArrayList<CityData> allcities;
@@ -69,15 +67,15 @@ public class HomeFragment extends Fragment implements SwipeCallback{
     ArrayList<AreaData> allareas;
     ArrayList<String> areas_title = new ArrayList<>();
 
-    String selectedAreaCode,selectedCity;
+    String selectedAreaCode, selectedCity;
 
     final static int DIALOG_FRAGMENT = 110;
 
     //popups
-    ArrayList<CatergoryObject> hangoutsdata,servicesdata,shoppingdata;
-    ArrayList<String> hangoutlist,serviceslist,shoppinglist;
-    ListPopupWindow hangoutspopup,servicespopup,shopppingpopup;
-    ArrayAdapter hangoutsadapter,servicesadapter,shoppingadapter;
+    ArrayList<CatergoryObject> hangoutsdata, servicesdata, shoppingdata;
+    ArrayList<String> hangoutlist, serviceslist, shoppinglist;
+    ListPopupWindow hangoutspopup, servicespopup, shopppingpopup;
+    ArrayAdapter hangoutsadapter, servicesadapter, shoppingadapter;
 
     GestureListener.Direction redirectDirection = null;
 
@@ -88,14 +86,14 @@ public class HomeFragment extends Fragment implements SwipeCallback{
     public void onPause() {
         super.onPause();
 
-        ((MainActivity)getActivity()).bottomNavigationView.setVisibility(View.VISIBLE);
+        ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        ((MainActivity)getActivity()).bottomNavigationView.setVisibility(View.GONE);
+        ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.GONE);
     }
 
     @Override
@@ -107,9 +105,9 @@ public class HomeFragment extends Fragment implements SwipeCallback{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_home,container,false);
+        View v = inflater.inflate(R.layout.fragment_home, container, false);
 
-        ((MainActivity)getActivity()).bottomNavigationView.setVisibility(View.GONE);
+        ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.GONE);
 
         session = new SessionManager(getActivity());
 
@@ -117,7 +115,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
         tv_hangoutscount = v.findViewById(R.id.tv_hangoutscount);
         tv_shoppingcount = v.findViewById(R.id.tv_shoppingcount);
 
-        hangoutsdetector = new GestureDetector(getActivity(),new GestureListener(GestureListener.ItemCode.HANGOUTS,this));
+        hangoutsdetector = new GestureDetector(getActivity(), new GestureListener(GestureListener.ItemCode.HANGOUTS, this));
         hangouts = v.findViewById(R.id.hangouts);
         hangouts.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -127,7 +125,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
             }
         });
 
-        servicesdetector = new GestureDetector(getActivity(),new GestureListener(GestureListener.ItemCode.SERVICES,this));
+        servicesdetector = new GestureDetector(getActivity(), new GestureListener(GestureListener.ItemCode.SERVICES, this));
         services = v.findViewById(R.id.services);
         services.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -137,7 +135,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
             }
         });
 
-        shoppingdetector = new GestureDetector(getActivity(),new GestureListener(GestureListener.ItemCode.SHOPPINNG,this));
+        shoppingdetector = new GestureDetector(getActivity(), new GestureListener(GestureListener.ItemCode.SHOPPINNG, this));
         shopping = v.findViewById(R.id.shopping);
         shopping.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -151,36 +149,43 @@ public class HomeFragment extends Fragment implements SwipeCallback{
         v.findViewById(R.id.mydetails).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new MyDetailsFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new MyDetailsFragment()).commit();
             }
         });
 
         v.findViewById(R.id.feedback).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new FeedbackFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new FeedbackFragment()).commit();
             }
         });
 
         v.findViewById(R.id.ranking).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new RankingFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new RankingFragment()).commit();
             }
         });
 
 
-
         //dropdown lists---------------------------------------------------------------------
 
-        hangoutsdata = new ArrayList<>();servicesdata = new ArrayList<>(); shoppingdata = new ArrayList<>();
-        hangoutlist = new ArrayList<>();serviceslist = new ArrayList<>();shoppinglist = new ArrayList<>();
-        hangoutspopup = new ListPopupWindow(getActivity());servicespopup = new ListPopupWindow(getActivity());shopppingpopup = new ListPopupWindow(getActivity());
-        hangoutsadapter = new ArrayAdapter(getActivity(),R.layout.popup_dropdown_item,new ArrayList());
-        servicesadapter = new ArrayAdapter(getActivity(),R.layout.popup_dropdown_item,new ArrayList());
-        shoppingadapter = new ArrayAdapter(getActivity(),R.layout.popup_dropdown_item,new ArrayList());
+        hangoutsdata = new ArrayList<>();
+        servicesdata = new ArrayList<>();
+        shoppingdata = new ArrayList<>();
+        hangoutlist = new ArrayList<>();
+        serviceslist = new ArrayList<>();
+        shoppinglist = new ArrayList<>();
+        hangoutspopup = new ListPopupWindow(getActivity());
+        servicespopup = new ListPopupWindow(getActivity());
+        shopppingpopup = new ListPopupWindow(getActivity());
+        hangoutsadapter = new ArrayAdapter(getActivity(), R.layout.popup_dropdown_item, new ArrayList());
+        servicesadapter = new ArrayAdapter(getActivity(), R.layout.popup_dropdown_item, new ArrayList());
+        shoppingadapter = new ArrayAdapter(getActivity(), R.layout.popup_dropdown_item, new ArrayList());
 
-        hangoutspopup.setAdapter(hangoutsadapter);servicespopup.setAdapter(servicesadapter);shopppingpopup.setAdapter(shoppingadapter);
+        hangoutspopup.setAdapter(hangoutsadapter);
+        servicespopup.setAdapter(servicesadapter);
+        shopppingpopup.setAdapter(shoppingadapter);
 
         hangoutspopup.setHeight(ListPopupWindow.WRAP_CONTENT);
         hangoutspopup.setWidth(400);
@@ -192,7 +197,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
                 String categoryName = hangoutsdata.get(position).getCategoryName();
                 //Toast.makeText(getActivity(), "" + categoryName, Toast.LENGTH_SHORT).show();
                 hangoutspopup.dismiss();
-                
+
                 redirectToPageByDirection(hangoutsdata.get(position));
 
             }
@@ -237,7 +242,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
         ll_city_selector = v.findViewById(R.id.ll_city_selector);
         allcities = new ArrayList<>();
         citypopup = new ListPopupWindow(getActivity());
-        cityadapter = new ArrayAdapter(getActivity(),R.layout.popup_dropdown_item,new ArrayList());
+        cityadapter = new ArrayAdapter(getActivity(), R.layout.popup_dropdown_item, allcities);
         citypopup.setAdapter(cityadapter);
         citypopup.setHeight(ListPopupWindow.WRAP_CONTENT);
         citypopup.setWidth(ListPopupWindow.WRAP_CONTENT);
@@ -249,7 +254,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
 
                 citypopup.dismiss();
 
-                ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(allareas.get(position).getDdText());
+                ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(allareas.get(position).getDdText());
 
                 getAreaByPosition(position);
             }
@@ -265,7 +270,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
 
         //--------------------cities
 
-        ((MainActivity)getActivity()).checkPermissionForLocation(MainActivity.LOAD_HOME_AREAS);
+        ((MainActivity) getActivity()).checkPermissionForLocation(MainActivity.LOAD_HOME_AREAS);
         getCategoryCounts();
 
 
@@ -273,58 +278,58 @@ public class HomeFragment extends Fragment implements SwipeCallback{
     }
 
 
-
-    public void setTest(String a,String b, String c) {}
+    public void setTest(String a, String b, String c) {
+    }
 
     //cities--------------------------------------------
 
 
-    private void loadServingAreas(String suburb,String lat_lon,String address,String cityid) {
+    private void loadServingAreas(String suburb, String lat_lon, String address, String cityid) {
 
         FilterData filter = RetroClient.getClient().create(FilterData.class);
-        Call<AreasResponse> call = filter.getAreas(session.getToken(),session.getUserID(),suburb,lat_lon,address,cityid);
+        Call<AreasResponse> call = filter.getAreas(session.getToken(), session.getUserID(), suburb, lat_lon, address, cityid);
         call.enqueue(new Callback<AreasResponse>() {
             @Override
             public void onResponse(Call<AreasResponse> call, Response<AreasResponse> response) {
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
                     allareas = new ArrayList<>();
                     cityadapter.clear();
                     areas_title.clear();
 
-                    AreaData ad = new AreaData(0,"near","Near me","default",false);
+                    AreaData ad = new AreaData(0, "near", "Near me", "default", false);
 
                     allareas.add(ad);
                     allareas.addAll(response.body().getData());
 
                     AreaData selectedAreadata = null;
 
-                    for(AreaData a : allareas){
+                    for (AreaData a : allareas) {
                         cityadapter.add(a.getDdText());
                         areas_title.add(a.getDdText());
 
-                        if(a.isSelected()){
+                        if (a.isSelected()) {
                             //((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(a.getDdText());
                             selectedAreadata = a;
                         }
                     }
 
-                    if(selectedAreadata != null){
+                    if (selectedAreadata != null) {
 
-                        if(selectedAreadata.getDdValue().equals("near")){
+                        if (selectedAreadata.getDdValue().equals("near")) {
 
                             getNearMeData();
 
-                        }else if(selectedAreadata.getFilterType().equals("A")){
+                        } else if (selectedAreadata.getFilterType().equals("A")) {
 
                             session.setcurrentcity(1);
                             selectedAreaCode = selectedAreadata.getDdValue();
-                            ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
+                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
 
-                        }else if(selectedAreadata.getFilterType().equals("C")){
+                        } else if (selectedAreadata.getFilterType().equals("C")) {
                             session.setcurrentcity(Integer.parseInt(selectedAreadata.getDdValue()));
-                            ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
+                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
                         }
                     }
 
@@ -332,7 +337,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
                     citypopup.setWidth(480);
 
 
-                }else{
+                } else {
 
                 }
 
@@ -346,65 +351,64 @@ public class HomeFragment extends Fragment implements SwipeCallback{
 
     }
 
-    private void getAreaByPosition(int position){
+    private void getAreaByPosition(int position) {
 
-        if(allareas.get(position).getDdValue().equals("near")){
+        if (allareas.get(position).getDdValue().equals("near")) {
             getNearMeData();
-        }else if(allareas.get(position).getFilterType().equals("A")){
+        } else if (allareas.get(position).getFilterType().equals("A")) {
             //if  areacode
-            getDataWithAreaCode(position,allareas.get(position));
-        }else if(allareas.get(position).getFilterType().equals("C")){
+            getDataWithAreaCode(position, allareas.get(position));
+        } else if (allareas.get(position).getFilterType().equals("C")) {
             //if cities
-            getDataWithCity(position,allareas.get(position));
+            getDataWithCity(position, allareas.get(position));
         }
 
     }
 
-    private void getDataWithCity(int position,AreaData ad) {
+    private void getDataWithCity(int position, AreaData ad) {
 
         selectedAreaCode = "";
         session.setcurrentcity(Integer.parseInt(ad.getDdValue()));
-        ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(ad.getDdText());
+        ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(ad.getDdText());
 
         //Toast.makeText(getActivity(), "" + ad.getDdText(), Toast.LENGTH_SHORT).show();
 
     }
 
-    private void getDataWithAreaCode(int position,AreaData ad) {
+    private void getDataWithAreaCode(int position, AreaData ad) {
 
         session.setcurrentcity(1);
         selectedAreaCode = ad.getDdValue();
-        ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(ad.getDdText());
+        ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(ad.getDdText());
 
         Toast.makeText(getActivity(), "" + ad.getDdText(), Toast.LENGTH_SHORT).show();
     }
 
     private void getNearMeData() {
-        ((MainActivity)getActivity()).checkPermissionForLocation(MainActivity.LOAD_HOME_SUGGESTIONS);
+        ((MainActivity) getActivity()).checkPermissionForLocation(MainActivity.LOAD_HOME_SUGGESTIONS);
     }
 
-    public void setAreasByCurrentLocation(String address,String location_split,String lat, String lon){
+    public void setAreasByCurrentLocation(String address, String location_split, String lat, String lon) {
         //Toast.makeText(getActivity(), "" + location_split, Toast.LENGTH_SHORT).show();
 
-        loadServingAreas(location_split,lat + "," + lon, address,"" + session.getcurrentcity());
+        loadServingAreas(location_split, lat + "," + lon, address, "" + session.getcurrentcity());
 
     }
 
     //cities--------------------------------------------
 
 
-
     private void getCategoryCounts() {
 
         Suggestions s = RetroClient.getClient().create(Suggestions.class);
-        Call<CategoryCountResponse> call = s.getCategoryCount(session.getToken(),session.getUserMobile(),"","","" + session.getcurrentcity());
+        Call<CategoryCountResponse> call = s.getCategoryCount(session.getToken(), session.getUserMobile(), "", "", "" + session.getcurrentcity());
         call.enqueue(new Callback<CategoryCountResponse>() {
             @Override
             public void onResponse(Call<CategoryCountResponse> call, Response<CategoryCountResponse> response) {
                 //Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
                 //Log.d(RetroClient.TAG, "onResponse: what" + response.body().getData().getCategoryCountData().get(0).getCategoryName());
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
                     //------------------------------------------------------
 
@@ -416,16 +420,16 @@ public class HomeFragment extends Fragment implements SwipeCallback{
                     //------------------------------------------------------
 
 
-                    for(CatergoryObject c : response.body().getData().getCategoryCountData()){
-                        if(c.getCatId() == 1){
+                    for (CatergoryObject c : response.body().getData().getCategoryCountData()) {
+                        if (c.getCatId() == 1) {
                             hangoutlist.add(c.getCategoryName());
                             hangoutsdata.add(c);
                             hangoutsadapter.add(c.getCategoryName());
-                        }else if(c.getCatId() == 2){
+                        } else if (c.getCatId() == 2) {
                             serviceslist.add(c.getCategoryName());
                             servicesdata.add(c);
                             servicesadapter.add(c.getCategoryName());
-                        }else if(c.getCatId() == 3){
+                        } else if (c.getCatId() == 3) {
                             shoppinglist.add(c.getCategoryName());
                             shoppingdata.add(c);
                             shoppingadapter.add(c.getCategoryName());
@@ -453,26 +457,26 @@ public class HomeFragment extends Fragment implements SwipeCallback{
         AddSuggestionFragment addSuggestionFragment = new AddSuggestionFragment();
         Bundle b = new Bundle();
 
-        switch(redirectDirection){
-            case BOTTOM:{
-                b.putBoolean("fromHome",true);
-                b.putInt("homeCategory",catergoryObject.getCatId());
-                b.putInt("homeSubCategory",catergoryObject.getSubCatId());
+        switch (redirectDirection) {
+            case BOTTOM: {
+                b.putBoolean("fromHome", true);
+                b.putInt("homeCategory", catergoryObject.getCatId());
+                b.putInt("homeSubCategory", catergoryObject.getSubCatId());
                 findSuggestionsFragment.setArguments(b);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,findSuggestionsFragment,findSuggestionsFragment.getClass().getName()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, findSuggestionsFragment, findSuggestionsFragment.getClass().getName()).commit();
                 break;
 
             }
-            case TOP:{
+            case TOP: {
 
-                b.putBoolean("fromHome",true);
-                b.putBoolean("addSuggestion",true);
-                b.putInt("homeCategory",catergoryObject.getCatId());
-                b.putInt("homeSubCategory",catergoryObject.getSubCatId());
-                b.putString("homeSubCategoryText",catergoryObject.getCategoryName());
+                b.putBoolean("fromHome", true);
+                b.putBoolean("addSuggestion", true);
+                b.putInt("homeCategory", catergoryObject.getCatId());
+                b.putInt("homeSubCategory", catergoryObject.getSubCatId());
+                b.putString("homeSubCategoryText", catergoryObject.getCategoryName());
 
                 addSuggestionFragment.setArguments(b);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,addSuggestionFragment,addSuggestionFragment.getClass().getName()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, addSuggestionFragment, addSuggestionFragment.getClass().getName()).commit();
                 break;
 
             }
@@ -493,8 +497,8 @@ public class HomeFragment extends Fragment implements SwipeCallback{
         redirectDirection = direction;
 
 
-        switch (direction){
-            case BOTTOM:{
+        switch (direction) {
+            case BOTTOM: {
 
 //                if(itemcode.ordinal() == 0){
 //                    hangoutspopup.show();
@@ -505,8 +509,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
 //                }
 
 
-
-                showDialogWithItems(itemcode.ordinal() + 1,3);
+                showDialogWithItems(itemcode.ordinal() + 1, 3);
 
                 break;
 
@@ -516,13 +519,13 @@ public class HomeFragment extends Fragment implements SwipeCallback{
 //                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,findSuggestionsFragment,findSuggestionsFragment.getClass().getName()).commit();
 //                break;
             }
-            case TOP:{
+            case TOP: {
 
-                if(itemcode.ordinal() == 0){
+                if (itemcode.ordinal() == 0) {
                     hangoutspopup.show();
-                }else if(itemcode.ordinal() == 1){
+                } else if (itemcode.ordinal() == 1) {
                     servicespopup.show();
-                }else if(itemcode.ordinal() == 2){
+                } else if (itemcode.ordinal() == 2) {
                     shopppingpopup.show();
                 }
 
@@ -531,7 +534,7 @@ public class HomeFragment extends Fragment implements SwipeCallback{
 //                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,addSuggestionFragment,addSuggestionFragment.getClass().getName()).commit();
 //                break;
             }
-            case RIGHT:{
+            case RIGHT: {
 
 //                if(itemcode.ordinal() == 0){
 //                    hangoutspopup.show();
@@ -542,26 +545,26 @@ public class HomeFragment extends Fragment implements SwipeCallback{
 //                }
 //              break;
 
-                b.putBoolean("showRequestedSuggestions",true);
+                b.putBoolean("showRequestedSuggestions", true);
                 addSuggestionFragment.setArguments(b);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,addSuggestionFragment,addSuggestionFragment.getClass().getName()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, addSuggestionFragment, addSuggestionFragment.getClass().getName()).commit();
                 break;
             }
-            case LEFT:{
+            case LEFT: {
 
-                b.putString("selected_category",itemcode.ordinal() + 1 + "");
-                b.putString("selected_subcategory","");
+                b.putString("selected_category", itemcode.ordinal() + 1 + "");
+                b.putString("selected_subcategory", "");
                 requestSuggestionsFragment.setArguments(b);
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,requestSuggestionsFragment,requestSuggestionsFragment.getClass().getName()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, requestSuggestionsFragment, requestSuggestionsFragment.getClass().getName()).commit();
                 break;
             }
-            case TAPPED:{
+            case TAPPED: {
 
-                b.putBoolean("fromHome",true);
-                b.putInt("homeCategory",itemcode.ordinal() + 1);
+                b.putBoolean("fromHome", true);
+                b.putInt("homeCategory", itemcode.ordinal() + 1);
                 findSuggestionsFragment.setArguments(b);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,findSuggestionsFragment,findSuggestionsFragment.getClass().getName()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, findSuggestionsFragment, findSuggestionsFragment.getClass().getName()).commit();
                 break;
             }
 
@@ -572,16 +575,15 @@ public class HomeFragment extends Fragment implements SwipeCallback{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        switch (requestCode){
-            case DIALOG_FRAGMENT:{
+        switch (requestCode) {
+            case DIALOG_FRAGMENT: {
 
                 if (resultCode == Activity.RESULT_OK) {
 
                     Log.d(RetroClient.TAG, "onActivityResult: " + data.getStringExtra("itemname"));
 
 
-
-                } else if (resultCode == Activity.RESULT_CANCELED){
+                } else if (resultCode == Activity.RESULT_CANCELED) {
 
                 }
 
@@ -595,39 +597,38 @@ public class HomeFragment extends Fragment implements SwipeCallback{
 
         String[] items;
 
-        if(categoryId == 1){
+        if (categoryId == 1) {
 
             items = new String[hangoutlist.size()];
             int index = 0;
-            for(String s : hangoutlist){
+            for (String s : hangoutlist) {
                 items[index] = s;
-                Log.d(RetroClient.TAG, "showDialogWithItems: " + s +  " " + index++);
+                Log.d(RetroClient.TAG, "showDialogWithItems: " + s + " " + index++);
 
             }
 
-        }else if(categoryId == 2){
+        } else if (categoryId == 2) {
 
             items = new String[serviceslist.size()];
             int index = 0;
-            for(String s : serviceslist){
+            for (String s : serviceslist) {
                 items[index] = s;
-                Log.d(RetroClient.TAG, "showDialogWithItems: " + s +  " " + index++);
+                Log.d(RetroClient.TAG, "showDialogWithItems: " + s + " " + index++);
             }
 
-        }else{
+        } else {
 
             items = new String[shoppinglist.size()];
             int index = 0;
-            for(String s : shoppinglist){
+            for (String s : shoppinglist) {
                 items[index] = s;
-                Log.d(RetroClient.TAG, "showDialogWithItems: " + s +  " " + index++);
+                Log.d(RetroClient.TAG, "showDialogWithItems: " + s + " " + index++);
             }
         }
 
-        DialogList d = DialogList.newInstance(items,categoryId,intent);
-        d.setTargetFragment(HomeFragment.this,DIALOG_FRAGMENT);
-        d.show(getActivity().getSupportFragmentManager(),"itemsdialog");
-
+        DialogList d = DialogList.newInstance(items, categoryId, intent);
+        d.setTargetFragment(HomeFragment.this, DIALOG_FRAGMENT);
+        d.show(getActivity().getSupportFragmentManager(), "itemsdialog");
 
 
     }
