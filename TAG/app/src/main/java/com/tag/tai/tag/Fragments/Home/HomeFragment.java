@@ -59,13 +59,15 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     TextView tv_servicescount, tv_hangoutscount, tv_shoppingcount;
 
     LinearLayout ll_city_selector;
+    LinearLayout ll_sub_area_selector;
     ArrayList<CityData> allcities;
     ArrayList<String> cities = new ArrayList<>();
     ListPopupWindow citypopup;
+    ListPopupWindow subAreaPopup;
     ArrayAdapter cityadapter;
 
     ArrayList<AreaData> allareas;
-    ArrayList<String> areas_title = new ArrayList<>();
+    ArrayList<String> subAreas = new ArrayList<>();
 
     String selectedAreaCode, selectedCity;
 
@@ -78,6 +80,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     ArrayAdapter hangoutsadapter, servicesadapter, shoppingadapter;
 
     GestureListener.Direction redirectDirection = null;
+    private ArrayAdapter subAreasAdapter;
 
     public HomeFragment() {
     }
@@ -270,6 +273,38 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
         //--------------------cities
 
+        //--------------------sub-areas
+        //sub-areas selector
+        ll_sub_area_selector = v.findViewById(R.id.ll_sub_area_selector);
+        subAreaPopup = new ListPopupWindow(getActivity());
+        subAreasAdapter = new ArrayAdapter(getActivity(), R.layout.popup_dropdown_item, subAreas);
+        subAreaPopup.setAdapter(subAreasAdapter);
+        subAreaPopup.setHeight(ListPopupWindow.WRAP_CONTENT);
+        subAreaPopup.setWidth(ListPopupWindow.WRAP_CONTENT);
+        subAreaPopup.setModal(true);
+        subAreaPopup.setAnchorView(ll_sub_area_selector);
+        subAreaPopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                subAreaPopup.dismiss();
+
+                ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(allareas.get(position).getDdText());
+
+                getAreaByPosition(position);
+            }
+        });
+
+        ll_sub_area_selector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subAreaPopup.show();
+            }
+        });
+
+
+        //--------------------sub-areas
+
         ((MainActivity) getActivity()).checkPermissionForLocation(MainActivity.LOAD_HOME_AREAS);
         getCategoryCounts();
 
@@ -296,7 +331,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
                     allareas = new ArrayList<>();
                     cityadapter.clear();
-                    areas_title.clear();
+                    subAreasAdapter.clear();
 
                     AreaData ad = new AreaData(0, "near", "Near me", "default", false);
 
@@ -306,8 +341,10 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                     AreaData selectedAreadata = null;
 
                     for (AreaData a : allareas) {
-                        cityadapter.add(a.getDdText());
-                        areas_title.add(a.getDdText());
+                        if (a.getFilterType().equalsIgnoreCase("C"))
+                            cityadapter.add(a.getDdText());
+                        else
+                            subAreasAdapter.add(a.getDdText());
 
                         if (a.isSelected()) {
                             //((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(a.getDdText());
@@ -318,14 +355,13 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                     if (selectedAreadata != null) {
 
                         if (selectedAreadata.getDdValue().equals("near")) {
-
                             getNearMeData();
 
                         } else if (selectedAreadata.getFilterType().equals("A")) {
 
                             session.setcurrentcity(1);
                             selectedAreaCode = selectedAreadata.getDdValue();
-                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
+                            ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(selectedAreadata.getDdText());
 
                         } else if (selectedAreadata.getFilterType().equals("C")) {
                             session.setcurrentcity(Integer.parseInt(selectedAreadata.getDdValue()));
@@ -334,7 +370,9 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                     }
 
                     cityadapter.notifyDataSetChanged();
+                    subAreasAdapter.notifyDataSetChanged();
                     citypopup.setWidth(480);
+                    subAreaPopup.setWidth(480);
 
 
                 } else {
