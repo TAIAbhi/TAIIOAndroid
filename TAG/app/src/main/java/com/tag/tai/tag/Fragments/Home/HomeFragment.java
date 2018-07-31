@@ -613,6 +613,8 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
                 b.putBoolean("fromHome", true);
                 b.putInt("homeCategory", itemcode.ordinal() + 1);
+                b.putParcelable("city", citiesAdapter.getSelectedArea());
+                b.putParcelable("subArea", subAreasAdapter.getSelectedArea());
                 findSuggestionsFragment.setArguments(b);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, findSuggestionsFragment, findSuggestionsFragment.getClass().getName()).commit();
                 break;

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -149,6 +150,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     CardView cv_request_suggestions_option;
     TextView tv_request_suggestion,tv_view_requests;
+    AreaData selectedCity, selectedSubArea;
 
     Loader loader;
     int loadcount = 1;
@@ -162,6 +164,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        selectedCity = getArguments().getParcelable("city");
+        selectedSubArea = getArguments().getParcelable("subArea");
     }
 
     @Nullable
@@ -432,6 +436,21 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     } //end of onCreateView
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //showing selected area
+        if(selectedSubArea !=null){
+            setSelectedAreaName(selectedSubArea.getDdText());
+            setSuggestionsByCurrentLocation(selectedSubArea.getDdText());
+        }
+        else if (selectedCity != null){
+            setSelectedAreaName(selectedCity.getDdText());
+            setSuggestionsByCurrentLocation(selectedCity.getDdText());
+        }
+        //showing categories
+    }
+
     private void getAreaByPosition(int position){
 
         if(allareas.get(position).getDdValue().equals("near")){
@@ -484,6 +503,11 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     }
 
+    //setting selected area
+    private void setSelectedAreaName(String selectedAreaName){
+        ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreaName);
+    }
+
     private void getNearMeData() {
         ((MainActivity)getActivity()).checkPermissionForLocation(MainActivity.LOAD_SUGGESTIONS);
     }
@@ -524,7 +548,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         }
                     }
 
-                    if(selectedAreadata != null){
+                    if(selectedAreadata != null && (selectedCity == null && selectedSubArea == null)){
 
                         if(selectedAreadata.getDdValue().equals("near")){
 
