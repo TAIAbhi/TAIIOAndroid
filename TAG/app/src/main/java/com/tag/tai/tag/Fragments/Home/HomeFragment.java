@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     SessionManager session;
     TextView tv_servicescount, tv_hangoutscount, tv_shoppingcount;
 
-    AreaListAdapter cityadapter, subAreasAdapter;
+    AreaListAdapter citiesAdapter, subAreasAdapter;
     LinearLayout ll_city_selector;
     LinearLayout ll_sub_area_selector;
     ListPopupWindow citypopup;
@@ -240,8 +240,8 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         ll_city_selector = v.findViewById(R.id.ll_city_selector);
         cities = new ArrayList<>();
         citypopup = new ListPopupWindow(getActivity());
-        cityadapter = new AreaListAdapter(getActivity(), cities);
-        citypopup.setAdapter(cityadapter);
+        citiesAdapter = new AreaListAdapter(getActivity(), cities);
+        citypopup.setAdapter(citiesAdapter);
         citypopup.setHeight(ListPopupWindow.WRAP_CONTENT);
         citypopup.setWidth(ListPopupWindow.WRAP_CONTENT);
         citypopup.setModal(true);
@@ -252,6 +252,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                 citypopup.dismiss();
                 ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(cities.get(position).getDdValue());
                 getCityByPosition(position);
+                getCategoryCounts();
             }
         });
 
@@ -281,6 +282,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                 subAreaPopup.dismiss();
                 ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(subAreas.get(position).getDdValue());
                 getSubAreaByPosition(position);
+                getCategoryCounts();
             }
         });
 
@@ -322,9 +324,9 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                     cities.clear();
                     subAreas.clear();
 
-                    AreaData nearByArea = new AreaData(0, "near", "Near me", "default", false);
+                    //AreaData nearByArea = new AreaData(0, "near", "Near me", "A", false);
 
-                    allareas.add(nearByArea);
+                    //allareas.add(nearByArea);
                     allareas.addAll(response.body().getData());
 
                     AreaData selectedAreaData = null;
@@ -345,16 +347,19 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                         if (selectedAreaData.getDdValue().equals("near")) {
                             getNearMeData();
                         } else if (selectedAreaData.getFilterType().equals("A")) {
-                            session.setcurrentcity(1);
+                            session.setcurrentcity(Integer.parseInt(selectedAreaData.getCityId()));
                             selectedAreaCode = selectedAreaData.getDdValue();
+                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText("Select");
                             ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(selectedAreaData.getDdText());
                         } else if (selectedAreaData.getFilterType().equals("C")) {
                             session.setcurrentcity(Integer.parseInt(selectedAreaData.getDdValue()));
                             ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreaData.getDdText());
+                            ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText("Select");
+                            subAreasAdapter.getFilter().filter(selectedAreaData.getCityId());
                         }
                     }
 
-                    cityadapter.notifyDataSetChanged();
+                    citiesAdapter.notifyDataSetChanged();
                     subAreasAdapter.notifyDataSetChanged();
                     citypopup.setWidth(480);
                     subAreaPopup.setWidth(480);
@@ -374,9 +379,10 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
     //if cities
     private void getCityByPosition(int position) {
-        AreaData area = cities.get(position);
-        cityadapter.setSelectedArea(position);
+        AreaData area = citiesAdapter.get(position);
+        citiesAdapter.setSelectedArea(position);
         subAreasAdapter.getFilter().filter(area.getCityId());
+        subAreasAdapter.setSelectedItemPosition(-1);
         if (area.getDdValue().equals("near")) {
             getNearMeData();
         } else {
@@ -387,14 +393,13 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
     //get are with area code
     private void getSubAreaByPosition(int position) {
-        AreaData area = subAreas.get(position);
+        AreaData area = subAreasAdapter.get(position);
         subAreasAdapter.setSelectedArea(position);
         if (area.getDdValue().equals("near")) {
             getNearMeData();
         } else {
             getDataWithAreaCode(position, area);
         }
-
     }
 
     private void getDataWithCity(int position, AreaData area) {
@@ -406,7 +411,10 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
     //with area code
     private void getDataWithAreaCode(int position, AreaData area) {
-        session.setcurrentcity(1);
+        if (area.getCityId() != null)
+            session.setcurrentcity(Integer.parseInt(area.getCityId()));
+        else
+            session.setcurrentcity(1);
         selectedAreaCode = area.getDdValue();
         ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(area.getDdText());
         Toast.makeText(getActivity(), "" + area.getDdText(), Toast.LENGTH_SHORT).show();
@@ -427,9 +435,23 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
 
     private void getCategoryCounts() {
+        String areaCode = "";
+        String cityId = "";
+        //sub-area
+        AreaData subArea = subAreasAdapter.getSelectedArea();
+        if (subArea != null)
+            areaCode = subArea.getDdValue();
+        //city
+        AreaData city = citiesAdapter.getSelectedArea();
+        if (city != null){
+            cityId = city.getCityId();
+            if (areaCode.isEmpty()){
+                areaCode = city.getDdValue();
+            }
+        }
 
         Suggestions s = RetroClient.getClient().create(Suggestions.class);
-        Call<CategoryCountResponse> call = s.getCategoryCount(session.getToken(), session.getUserMobile(), "", "", "" + session.getcurrentcity());
+        Call<CategoryCountResponse> call = s.getCategoryCount(session.getToken(), session.getUserMobile(), "", areaCode, cityId + session.getcurrentcity());
         call.enqueue(new Callback<CategoryCountResponse>() {
             @Override
             public void onResponse(Call<CategoryCountResponse> call, Response<CategoryCountResponse> response) {

@@ -49,10 +49,10 @@ open class AreaListAdapter(val mContext: Context, val areas: List<AreaData>)
 
     //setting selected area
     fun setSelectedArea(position: Int) {
-        if (selectedItemPosition >= 0) {
+        if (selectedItemPosition >= 0 && selectedItemPosition < data.size) {
             data[selectedItemPosition].isSelected = false
         }
-        if (position >= 0) {
+        if (position >= 0 && position < data.size) {
             data[position].isSelected = true
         }
         selectedItemPosition = position
@@ -61,10 +61,15 @@ open class AreaListAdapter(val mContext: Context, val areas: List<AreaData>)
 
     //getting selected area
     fun getSelectedArea(): AreaData? {
-        if (selectedItemPosition >= 0)
+        if (selectedItemPosition >= 0 && selectedItemPosition < data.size)
             return data[selectedItemPosition]
         else
             return null
+    }
+
+    //getting AreaData at position
+    fun get(position: Int): AreaData{
+        return data[position]
     }
 
     //binding data
