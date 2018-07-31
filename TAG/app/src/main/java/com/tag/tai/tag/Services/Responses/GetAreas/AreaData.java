@@ -10,6 +10,7 @@ public class AreaData implements Parcelable {
     String ddText;
     String filterType;
     boolean isSelected;
+    String cityId;
 
     public AreaData(int sequienceId, String ddValue, String ddText, String filterType, boolean isSelected) {
         this.sequienceId = sequienceId;
@@ -57,6 +58,14 @@ public class AreaData implements Parcelable {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public void setCityId(String cityId){
+        this.cityId = cityId;
+    }
+
+    public String getCityId(){
+        return cityId;
     }
 
     @Override

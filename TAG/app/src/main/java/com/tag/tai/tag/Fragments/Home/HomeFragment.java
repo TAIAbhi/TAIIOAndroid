@@ -35,7 +35,6 @@ import com.tag.tai.tag.Services.Responses.CategoryCountResponse.CategoryCountRes
 import com.tag.tai.tag.Services.Responses.CategoryCountResponse.CatergoryObject;
 import com.tag.tai.tag.Services.Responses.GetAreas.AreaData;
 import com.tag.tai.tag.Services.Responses.GetAreas.AreasResponse;
-import com.tag.tai.tag.Services.Responses.GetCities.CityData;
 import com.tag.tai.tag.Services.RetroClient;
 
 import java.util.ArrayList;
@@ -58,16 +57,15 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     SessionManager session;
     TextView tv_servicescount, tv_hangoutscount, tv_shoppingcount;
 
+    AreaListAdapter cityadapter, subAreasAdapter;
     LinearLayout ll_city_selector;
     LinearLayout ll_sub_area_selector;
-    ArrayList<CityData> allcities;
-    ArrayList<String> cities = new ArrayList<>();
     ListPopupWindow citypopup;
     ListPopupWindow subAreaPopup;
-    ArrayAdapter cityadapter;
 
     ArrayList<AreaData> allareas;
-    ArrayList<String> subAreas = new ArrayList<>();
+    ArrayList<AreaData> cities = new ArrayList<>();
+    ArrayList<AreaData> subAreas = new ArrayList<>();
 
     String selectedAreaCode, selectedCity;
 
@@ -80,7 +78,6 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     ArrayAdapter hangoutsadapter, servicesadapter, shoppingadapter;
 
     GestureListener.Direction redirectDirection = null;
-    private ArrayAdapter subAreasAdapter;
 
     public HomeFragment() {
     }
@@ -88,14 +85,12 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     @Override
     public void onPause() {
         super.onPause();
-
         ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.GONE);
     }
 
@@ -243,9 +238,9 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         //--------------------cities
         //city selector
         ll_city_selector = v.findViewById(R.id.ll_city_selector);
-        allcities = new ArrayList<>();
+        cities = new ArrayList<>();
         citypopup = new ListPopupWindow(getActivity());
-        cityadapter = new ArrayAdapter(getActivity(), R.layout.popup_dropdown_item, allcities);
+        cityadapter = new AreaListAdapter(getActivity(), cities);
         citypopup.setAdapter(cityadapter);
         citypopup.setHeight(ListPopupWindow.WRAP_CONTENT);
         citypopup.setWidth(ListPopupWindow.WRAP_CONTENT);
@@ -254,12 +249,9 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         citypopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 citypopup.dismiss();
-
-                ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(allareas.get(position).getDdText());
-
-                getAreaByPosition(position);
+                ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(cities.get(position).getDdValue());
+                getCityByPosition(position);
             }
         });
 
@@ -277,7 +269,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         //sub-areas selector
         ll_sub_area_selector = v.findViewById(R.id.ll_sub_area_selector);
         subAreaPopup = new ListPopupWindow(getActivity());
-        subAreasAdapter = new ArrayAdapter(getActivity(), R.layout.popup_dropdown_item, subAreas);
+        subAreasAdapter = new AreaListAdapter(getActivity(), subAreas);
         subAreaPopup.setAdapter(subAreasAdapter);
         subAreaPopup.setHeight(ListPopupWindow.WRAP_CONTENT);
         subAreaPopup.setWidth(ListPopupWindow.WRAP_CONTENT);
@@ -286,12 +278,9 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         subAreaPopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 subAreaPopup.dismiss();
-
-                ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(allareas.get(position).getDdText());
-
-                getAreaByPosition(position);
+                ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(subAreas.get(position).getDdValue());
+                getSubAreaByPosition(position);
             }
         });
 
@@ -330,42 +319,38 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                 if (response.code() == 200) {
 
                     allareas = new ArrayList<>();
-                    cityadapter.clear();
-                    subAreasAdapter.clear();
+                    cities.clear();
+                    subAreas.clear();
 
-                    AreaData ad = new AreaData(0, "near", "Near me", "default", false);
+                    AreaData nearByArea = new AreaData(0, "near", "Near me", "default", false);
 
-                    allareas.add(ad);
+                    allareas.add(nearByArea);
                     allareas.addAll(response.body().getData());
 
-                    AreaData selectedAreadata = null;
+                    AreaData selectedAreaData = null;
 
-                    for (AreaData a : allareas) {
-                        if (a.getFilterType().equalsIgnoreCase("C"))
-                            cityadapter.add(a.getDdText());
+                    for (AreaData areaData : allareas) {
+                        if (areaData.getFilterType().equalsIgnoreCase("C"))
+                            cities.add(areaData);
                         else
-                            subAreasAdapter.add(a.getDdText());
+                            subAreas.add(areaData);
 
-                        if (a.isSelected()) {
-                            //((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(a.getDdText());
-                            selectedAreadata = a;
+                        if (areaData.isSelected()) {
+                            selectedAreaData = areaData;
                         }
                     }
 
-                    if (selectedAreadata != null) {
+                    if (selectedAreaData != null) {
 
-                        if (selectedAreadata.getDdValue().equals("near")) {
+                        if (selectedAreaData.getDdValue().equals("near")) {
                             getNearMeData();
-
-                        } else if (selectedAreadata.getFilterType().equals("A")) {
-
+                        } else if (selectedAreaData.getFilterType().equals("A")) {
                             session.setcurrentcity(1);
-                            selectedAreaCode = selectedAreadata.getDdValue();
-                            ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(selectedAreadata.getDdText());
-
-                        } else if (selectedAreadata.getFilterType().equals("C")) {
-                            session.setcurrentcity(Integer.parseInt(selectedAreadata.getDdValue()));
-                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
+                            selectedAreaCode = selectedAreaData.getDdValue();
+                            ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(selectedAreaData.getDdText());
+                        } else if (selectedAreaData.getFilterType().equals("C")) {
+                            session.setcurrentcity(Integer.parseInt(selectedAreaData.getDdValue()));
+                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreaData.getDdText());
                         }
                     }
 
@@ -373,12 +358,9 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                     subAreasAdapter.notifyDataSetChanged();
                     citypopup.setWidth(480);
                     subAreaPopup.setWidth(480);
-
-
                 } else {
 
                 }
-
             }
 
             @Override
@@ -389,37 +371,45 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
     }
 
-    private void getAreaByPosition(int position) {
 
-        if (allareas.get(position).getDdValue().equals("near")) {
+    //if cities
+    private void getCityByPosition(int position) {
+        AreaData area = cities.get(position);
+        cityadapter.setSelectedArea(position);
+        subAreasAdapter.getFilter().filter(area.getCityId());
+        if (area.getDdValue().equals("near")) {
             getNearMeData();
-        } else if (allareas.get(position).getFilterType().equals("A")) {
-            //if  areacode
-            getDataWithAreaCode(position, allareas.get(position));
-        } else if (allareas.get(position).getFilterType().equals("C")) {
-            //if cities
-            getDataWithCity(position, allareas.get(position));
+        } else {
+            getDataWithCity(position, area);
         }
 
     }
 
-    private void getDataWithCity(int position, AreaData ad) {
-
-        selectedAreaCode = "";
-        session.setcurrentcity(Integer.parseInt(ad.getDdValue()));
-        ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(ad.getDdText());
-
-        //Toast.makeText(getActivity(), "" + ad.getDdText(), Toast.LENGTH_SHORT).show();
+    //get are with area code
+    private void getSubAreaByPosition(int position) {
+        AreaData area = subAreas.get(position);
+        subAreasAdapter.setSelectedArea(position);
+        if (area.getDdValue().equals("near")) {
+            getNearMeData();
+        } else {
+            getDataWithAreaCode(position, area);
+        }
 
     }
 
-    private void getDataWithAreaCode(int position, AreaData ad) {
+    private void getDataWithCity(int position, AreaData area) {
+        selectedAreaCode = "";
+        session.setcurrentcity(Integer.parseInt(area.getDdValue()));
+        ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(area.getDdText());
+        Toast.makeText(getActivity(), "" + area.getDdText(), Toast.LENGTH_SHORT).show();
+    }
 
+    //with area code
+    private void getDataWithAreaCode(int position, AreaData area) {
         session.setcurrentcity(1);
-        selectedAreaCode = ad.getDdValue();
-        ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(ad.getDdText());
-
-        Toast.makeText(getActivity(), "" + ad.getDdText(), Toast.LENGTH_SHORT).show();
+        selectedAreaCode = area.getDdValue();
+        ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(area.getDdText());
+        Toast.makeText(getActivity(), "" + area.getDdText(), Toast.LENGTH_SHORT).show();
     }
 
     private void getNearMeData() {
