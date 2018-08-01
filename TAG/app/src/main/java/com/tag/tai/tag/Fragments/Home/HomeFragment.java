@@ -67,7 +67,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     ArrayList<AreaData> cities = new ArrayList<>();
     ArrayList<AreaData> subAreas = new ArrayList<>();
 
-    String selectedAreaCode, selectedCity;
+    String selectedAreaCode, selectedCityId;
 
     final static int DIALOG_FRAGMENT = 110;
 
@@ -250,7 +250,8 @@ public class HomeFragment extends Fragment implements SwipeCallback {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 citypopup.dismiss();
-                ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(cities.get(position).getDdValue());
+                setCitySelectorText(cities.get(position).getDdValue());
+                setSubAreaSelectorText("All");
                 getCityByPosition(position);
                 getCategoryCounts();
             }
@@ -280,7 +281,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 subAreaPopup.dismiss();
-                ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(subAreas.get(position).getDdValue());
+                setSubAreaSelectorText(subAreas.get(position).getDdValue());
                 getSubAreaByPosition(position);
                 getCategoryCounts();
             }
@@ -324,11 +325,12 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                     cities.clear();
                     subAreas.clear();
 
-                    //AreaData nearByArea = new AreaData(0, "near", "Near me", "A", false);
-
-                    //allareas.add(nearByArea);
+                    AreaData allSubAreas = new AreaData(0, "", "All", "A", false);
+                    allSubAreas.setCityId("all");
+                    subAreas.add(allSubAreas);
                     allareas.addAll(response.body().getData());
 
+                    //selected area
                     AreaData selectedAreaData = null;
 
                     for (AreaData areaData : allareas) {
@@ -342,29 +344,42 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                         }
                     }
 
-                    if (selectedAreaData != null) {
-
-                        if (selectedAreaData.getDdValue().equals("near")) {
-                            getNearMeData();
-                        } else if (selectedAreaData.getFilterType().equals("A")) {
-                            session.setcurrentcity(Integer.parseInt(selectedAreaData.getCityId()));
-                            selectedAreaCode = selectedAreaData.getDdValue();
-                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText("Select");
-                            ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(selectedAreaData.getDdText());
-                        } else if (selectedAreaData.getFilterType().equals("C")) {
-                            session.setcurrentcity(Integer.parseInt(selectedAreaData.getDdValue()));
-                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreaData.getDdText());
-                            ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText("Select");
-                            subAreasAdapter.getFilter().filter(selectedAreaData.getCityId());
-                        }
-                    }
-
+                    //notifyin changes
                     citiesAdapter.notifyDataSetChanged();
                     subAreasAdapter.notifyDataSetChanged();
                     citypopup.setWidth(480);
                     subAreaPopup.setWidth(480);
-                } else {
 
+                    if (selectedAreaData != null) {
+                        if (selectedAreaData.getDdValue().equals("near")) {
+                            getNearMeData();
+                        }
+
+                        //setting area
+                        else if (selectedAreaData.getFilterType().equals("A")) {
+                            session.setcurrentcity(Integer.parseInt(selectedAreaData.getCityId()));
+                            selectedAreaCode = selectedAreaData.getDdValue();
+                            setSubAreaSelectorText(selectedAreaData.getDdText());
+
+                            //setting city name
+                            for (AreaData city : cities) {
+                                if (city.getCityId().equals(selectedAreaData.getCityId())) {
+                                    setCitySelectorText(city.getDdText());
+                                    break;
+                                }
+                            }
+                        }
+
+                        //setting city
+                        else if (selectedAreaData.getFilterType().equals("C")) {
+                            session.setcurrentcity(Integer.parseInt(selectedAreaData.getDdValue()));
+                            setCitySelectorText(selectedAreaData.getDdText());
+                        }
+
+                        //filtering sub area
+                        subAreasAdapter.getFilter().filter(selectedAreaData.getCityId());
+
+                    }
                 }
             }
 
@@ -376,19 +391,27 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
     }
 
+    //setting sub area selector
+    private void setSubAreaSelectorText(String subArea) {
+        ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(subArea);
+    }
+
+    //setting city selector
+    private void setCitySelectorText(String city) {
+        ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(city);
+    }
 
     //if cities
     private void getCityByPosition(int position) {
         AreaData area = citiesAdapter.get(position);
         citiesAdapter.setSelectedArea(position);
         subAreasAdapter.getFilter().filter(area.getCityId());
-        subAreasAdapter.setSelectedItemPosition(-1);
+        subAreasAdapter.setSelectedItemPosition(0);
         if (area.getDdValue().equals("near")) {
             getNearMeData();
         } else {
-            getDataWithCity(position, area);
+            setDataWithCity(position, area);
         }
-
     }
 
     //get are with area code
@@ -398,26 +421,24 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         if (area.getDdValue().equals("near")) {
             getNearMeData();
         } else {
-            getDataWithAreaCode(position, area);
+            setDataWithSubArea(position, area);
         }
     }
 
-    private void getDataWithCity(int position, AreaData area) {
+    private void setDataWithCity(int position, AreaData area) {
         selectedAreaCode = "";
         session.setcurrentcity(Integer.parseInt(area.getDdValue()));
-        ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(area.getDdText());
-        Toast.makeText(getActivity(), "" + area.getDdText(), Toast.LENGTH_SHORT).show();
+        setCitySelectorText(area.getDdText());
+        Toast.makeText(getActivity(), area.getDdValue() + " :: " + area.getDdText(), Toast.LENGTH_SHORT).show();
     }
 
     //with area code
-    private void getDataWithAreaCode(int position, AreaData area) {
-        if (area.getCityId() != null)
-            session.setcurrentcity(Integer.parseInt(area.getCityId()));
-        else
+    private void setDataWithSubArea(int position, AreaData area) {
+        if (area.getCityId() == null)
             session.setcurrentcity(1);
         selectedAreaCode = area.getDdValue();
-        ((TextView) ll_sub_area_selector.findViewById(R.id.tv_sub_area_name)).setText(area.getDdText());
-        Toast.makeText(getActivity(), "" + area.getDdText(), Toast.LENGTH_SHORT).show();
+        setSubAreaSelectorText(area.getDdText());
+        Toast.makeText(getActivity(), area.getDdValue() + " :: " + area.getDdText(), Toast.LENGTH_SHORT).show();
     }
 
     private void getNearMeData() {
@@ -435,23 +456,15 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
 
     private void getCategoryCounts() {
-        String areaCode = "";
-        String cityId = "";
-        //sub-area
-        AreaData subArea = subAreasAdapter.getSelectedArea();
-        if (subArea != null)
-            areaCode = subArea.getDdValue();
-        //city
-        AreaData city = citiesAdapter.getSelectedArea();
-        if (city != null){
-            cityId = city.getCityId();
-            if (areaCode.isEmpty()){
-                areaCode = city.getDdValue();
-            }
-        }
+
 
         Suggestions s = RetroClient.getClient().create(Suggestions.class);
-        Call<CategoryCountResponse> call = s.getCategoryCount(session.getToken(), session.getUserMobile(), "", areaCode, cityId + session.getcurrentcity());
+        Call<CategoryCountResponse> call = s.getCategoryCount(
+                session.getToken(),
+                session.getUserMobile(),
+                "",
+                selectedAreaCode,
+                String.valueOf(session.getcurrentcity()));
         call.enqueue(new Callback<CategoryCountResponse>() {
             @Override
             public void onResponse(Call<CategoryCountResponse> call, Response<CategoryCountResponse> response) {
@@ -626,23 +639,15 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         switch (requestCode) {
             case DIALOG_FRAGMENT: {
-
                 if (resultCode == Activity.RESULT_OK) {
-
                     Log.d(RetroClient.TAG, "onActivityResult: " + data.getStringExtra("itemname"));
-
-
                 } else if (resultCode == Activity.RESULT_CANCELED) {
-
                 }
-
                 break;
             }
         }
-
     }
 
     private void showDialogWithItems(int categoryId, int intent) {
@@ -684,6 +689,4 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
 
     }
-
-
 }

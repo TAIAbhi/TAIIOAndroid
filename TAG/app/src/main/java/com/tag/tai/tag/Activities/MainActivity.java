@@ -329,7 +329,6 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
                             Fragment f = getSupportFragmentManager().findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
                             Fragment home = getSupportFragmentManager().findFragmentByTag(new HomeFragment().getClass().getName());
                             if(f != null || home != null){
-
                                 if(location_purpose == LOAD_SUGGESTIONS)
                                 ((FindSuggestionsFragment)f).setSuggestionsByCurrentLocation(location_split);
                                 else if(location_purpose == LOAD_AREAS)

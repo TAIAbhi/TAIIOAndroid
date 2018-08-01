@@ -7,7 +7,7 @@ class AreasFilter: Filter() {
     var areasAdapter: AreaListAdapter? = null
 
     override fun performFiltering(cityId: CharSequence?): FilterResults {
-        val areasCopy = areasAdapter?.areas?.filter {it.cityId == cityId}
+        val areasCopy = areasAdapter?.areas?.filter {it.cityId in listOf(cityId, "all") }
         return FilterResults().apply {
             values = areasCopy
             count = areasCopy?.size?:0
