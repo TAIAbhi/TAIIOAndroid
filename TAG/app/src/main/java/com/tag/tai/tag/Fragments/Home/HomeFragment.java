@@ -480,21 +480,35 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                 if (response.code() == 200) {
                     int hangoutsCount = 0, servicesCount = 0, shoppingsCount = 0;
                     for (CatergoryObject c : response.body().getData().getCategoryCountData()) {
+                        String categoryNameCount = getString(R.string.category_name_count,
+                                c.getCategoryName(), c.getSuggCount());
                         if (c.getCatId() == 1) {
-                            hangoutlist.add(c.getCategoryName());
-                            hangoutsdata.add(c);
-                            hangoutsadapter.add(c.getCategoryName());
-                            hangoutsCount += c.getSuggCount();
+                            //checking total category count
+                            if (c.getCategoryName().equals("0")) {
+                                hangoutsCount = c.getSuggCount();
+                            } else {
+                                hangoutlist.add(c.getCategoryName());
+                                hangoutsdata.add(c);
+                                hangoutsadapter.add(categoryNameCount);
+                            }
                         } else if (c.getCatId() == 2) {
-                            serviceslist.add(c.getCategoryName());
-                            servicesdata.add(c);
-                            servicesadapter.add(c.getCategoryName());
-                            servicesCount += c.getSuggCount();
+                            //checking total category count
+                            if (c.getCategoryName().equals("0")) {
+                                servicesCount = c.getSuggCount();
+                            } else {
+                                serviceslist.add(c.getCategoryName());
+                                servicesdata.add(c);
+                                servicesadapter.add(categoryNameCount);
+                            }
                         } else if (c.getCatId() == 3) {
-                            shoppinglist.add(c.getCategoryName());
-                            shoppingdata.add(c);
-                            shoppingadapter.add(c.getCategoryName());
-                            shoppingsCount += c.getSuggCount();
+                            //checking total category count
+                            if (c.getCategoryName().equals("0")) {
+                                shoppingsCount = c.getSuggCount();
+                            } else {
+                                shoppinglist.add(c.getCategoryName());
+                                shoppingdata.add(c);
+                                shoppingadapter.add(categoryNameCount);
+                            }
                         }
                     }
                     //notifying adapter
@@ -503,7 +517,6 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                     shoppingadapter.notifyDataSetChanged();
 
                     //------------------------------------------------------
-                    tv_hangoutscount.setText(String.valueOf(hangoutsCount));
                     tv_servicescount.setText(String.valueOf(servicesCount));
                     tv_shoppingcount.setText(String.valueOf(shoppingsCount));
                     //------------------------------------------------------
