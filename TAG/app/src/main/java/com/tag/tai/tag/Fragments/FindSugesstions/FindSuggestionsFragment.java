@@ -13,6 +13,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -82,7 +83,7 @@ import static com.tag.tai.tag.Services.RetroClient.TAG;
 
 public class FindSuggestionsFragment extends Fragment implements FindSuggestionsCalls {
 
-    LinearLayout ll_holder_hangout,ll_holder_services,ll_holder_shopping;
+    LinearLayout ll_holder_hangout, ll_holder_services, ll_holder_shopping;
     LinearLayout ll_my_suggestions, ll_all_suggestions;
 
     RecyclerView recyc_mysuggestions;
@@ -98,7 +99,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     ArrayList<SuggestionData> allsuggestiondata;
     ArrayList<SuggestionData> currentFilteredData;
 
-    ArrayAdapter<String> dataAdapter,dataAdapterServices,shopAdapter;
+    ArrayAdapter<String> dataAdapter, dataAdapterServices, shopAdapter;
 
     ImageView fab_add_suggestion;
 
@@ -118,15 +119,15 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     ArrayList<String> filter_contact;
     ArrayList<ContactData> filter_contact_data;
 
-    PopupMenu hangoutspopup,servicespopup,shoppingpopup;
-    ArrayList<SubCatData> hangoutdata,servicesdata,shoppingdata;
+    PopupMenu hangoutspopup, servicespopup, shoppingpopup;
+    ArrayList<SubCatData> hangoutdata, servicesdata, shoppingdata;
 
-    String selected_category = "1",selected_subcategory = "";
-    int currentpageNumber,pageSize = 20,noOfRecord;
+    String selected_category = "1", selected_subcategory = "";
+    int currentpageNumber, pageSize = 20, noOfRecord;
     int selectedMyAllCategory = 1;
 
-    String selectedSourceID ="",selectedBusiness ="",selectedIsLocal ="",selectedLocation ="",selectedMicrocat ="",selectedContact ="";
-    String selectedSourceName = "",selectedContactName = "",selectedAreaCode = "";
+    String selectedSourceID = null, selectedBusiness = null, selectedIsLocal = null, selectedLocation = null, selectedMicrocat = null, selectedContact = null;
+    String selectedSourceName = null, selectedContactName = null, selectedAreaCode = null;
 
     //filter components end ------------------------------------------------------------------
 
@@ -141,7 +142,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
 
     CardView cv_request_suggestions_option;
-    TextView tv_request_suggestion,tv_view_requests;
+    TextView tv_request_suggestion, tv_view_requests;
     AreaData selectedCity, selectedSubArea;
 
     Loader loader;
@@ -156,16 +157,21 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        selectedCity = getArguments().getParcelable("city");
-        selectedSubArea = getArguments().getParcelable("subArea");
+        Bundle args = getArguments();
+        if (args != null) {
+            selectedCity = getArguments().getParcelable("city");
+            selectedSubArea = getArguments().getParcelable("subArea");
+            if (selectedSubArea != null)
+                selectedAreaCode = selectedSubArea.getDdValue();
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_findsuggestions,container,false);
+        View v = inflater.inflate(R.layout.fragment_findsuggestions, container, false);
 
-        loader = new Loader(getActivity(),(MainActivity)getActivity());
+        loader = new Loader(getActivity(), (MainActivity) getActivity());
 
         cv_request_suggestions_option = v.findViewById(R.id.cv_request_suggestions_option);
         tv_request_suggestion = v.findViewById(R.id.tv_request_suggestion);
@@ -186,7 +192,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         ll_city_selector = v.findViewById(R.id.ll_city_selector);
         allcities = new ArrayList<>();
         citypopup = new ListPopupWindow(getActivity());
-        cityadapter = new ArrayAdapter(getActivity(),R.layout.popup_dropdown_item,new ArrayList());
+        cityadapter = new ArrayAdapter(getActivity(), R.layout.popup_dropdown_item, new ArrayList());
         citypopup.setAdapter(cityadapter);
         citypopup.setHeight(ListPopupWindow.WRAP_CONTENT);
         citypopup.setWidth(ListPopupWindow.WRAP_CONTENT);
@@ -195,95 +201,23 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         citypopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 citypopup.dismiss();
-
-                ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(allareas.get(position).getDdText());
-
+                ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(allareas.get(position).getDdText());
                 getAreaByPosition(position);
-
-//                if(allareas.get(position).getDdValue().equals("near")){
-//                    getNearMeData();
-//                }else if(allareas.get(position).getFilterType().equals("A")){
-//                    //if  areacode
-//                    getDataWithAreaCode(position,allareas.get(position));
-//                }else if(allareas.get(position).getFilterType().equals("C")){
-//                    //if cities
-//                    getDataWithCity(position,allareas.get(position));
-//                }
-
             }
         });
-
-//        citypopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//                citypopup.dismiss();
-//
-//                if(cityadapter.getItem(position).toString().contains("Near me")){
-//
-//                    selectedLocation = cities.get(position);
-//                    ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedLocation);
-//
-//
-//                    getSuggestionsByFilter(selected_category,
-//                            selected_subcategory,
-//                            selectedContact,
-//                            selectedSourceID,
-//                            selectedBusiness,
-//                            selectedIsLocal,
-//                            selectedLocation,
-//                            selectedMicrocat,
-//                            1);
-//
-//                }else{
-//                    if(cityadapter.getItem(0).toString().contains("Near me"))position--;
-//
-//                    selectedLocation = "";
-//
-//                    session.setcurrentcity(Integer.parseInt(allcities.get(position).getCityId()));
-//                    ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(allcities.get(position).getCityName());
-//
-//                    getSuggestionsByFilter(selected_category,
-//                            selected_subcategory,
-//                            selectedContact,
-//                            selectedSourceID,
-//                            selectedBusiness,
-//                            selectedIsLocal,
-//                            selectedLocation,
-//                            selectedMicrocat,
-//                            1);
-//
-//                    initiatefilterLoad();
-//
-//                }
-//
-//            }
-//        });
-//
+        //dropdown
         ll_city_selector.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 citypopup.show();
             }
         });
-
-
-        //loadServingCities();
-        //loadServingAreas("","","","");
-
-        //end of city selector
-
         allsuggestiondata = new ArrayList<>();
         currentFilteredData = new ArrayList<>();
-
-
         //-------------------------fetching locations
 
-
         //filter functions ------------------------------------------------------------------
-
         filter_businessnames = new ArrayList<>();
         filter_microcats = new ArrayList<>();
         filter_location = new ArrayList<>();
@@ -293,7 +227,6 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         filter_contact_data = new ArrayList<>();
 
 
-
         getActivity().findViewById(R.id.tb_filter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -301,14 +234,14 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 Bundle b = new Bundle();
 
                 //sending dropdown data to dialog
-                b.putString("selected_category",selected_category);
+                b.putString("selected_category", selected_category);
 
-                b.putStringArrayList("filter_businessnames",filter_businessnames);
-                b.putStringArrayList("filter_microcats",filter_microcats);
-                b.putStringArrayList("filter_location",filter_location);
-                b.putStringArrayList("filter_source",filter_source);
-                b.putStringArrayList("filter_contact",filter_contact);
-                b.putParcelableArrayList("filter_allareas",allareas);
+                b.putStringArrayList("filter_businessnames", filter_businessnames);
+                b.putStringArrayList("filter_microcats", filter_microcats);
+                b.putStringArrayList("filter_location", filter_location);
+                b.putStringArrayList("filter_source", filter_source);
+                b.putStringArrayList("filter_contact", filter_contact);
+                b.putParcelableArrayList("filter_allareas", allareas);
 /*
                 selected_subcategory,
                         selectedContact,
@@ -320,15 +253,15 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 */
 
 
-                b.putString("selectedContactName",selectedContactName);
-                b.putString("selectedSourceName",selectedSourceName);
-                b.putString("selectedBusiness",selectedBusiness);
-                b.putString("selectedLocation",selectedLocation);
-                b.putString("selectedIsLocal",selectedIsLocal);
+                b.putString("selectedContactName", selectedContactName);
+                b.putString("selectedSourceName", selectedSourceName);
+                b.putString("selectedBusiness", selectedBusiness);
+                b.putString("selectedLocation", selectedLocation);
+                b.putString("selectedIsLocal", selectedIsLocal);
 
                 d.setArguments(b);
                 d.setTargetFragment(FindSuggestionsFragment.this, FILTERDIALOGCODE);
-                d.show(getActivity().getSupportFragmentManager(),"filter");
+                d.show(getActivity().getSupportFragmentManager(), "filter");
             }
         });
 
@@ -337,7 +270,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         recyc_mysuggestions = v.findViewById(R.id.recyc_allmysuggestions);
         allsuggestions = new ArrayList<>();
         allsuggestionsresponse = new ArrayList<>();
-        suggestionsAdapter = new SuggestionsListAdapter(allsuggestions,getActivity(),this);
+        suggestionsAdapter = new SuggestionsListAdapter(allsuggestions, getActivity(), this);
 
         recyc_mysuggestions.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyc_mysuggestions.setItemAnimator(new DefaultItemAnimator());
@@ -345,17 +278,18 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
         //-------------
 
-        if(getArguments() !=  null && getArguments().getBoolean("isFromNotification")){
+        ll_holder_hangout.setBackground(getResources().getDrawable(R.drawable.blue_curve_bg));
+        if (getArguments() != null && getArguments().getBoolean("isFromNotification")) {
             selectedLocation = getArguments().getString("LocationId");
             selected_category = getArguments().getString("CatId");
             selected_subcategory = getArguments().getString("SubCatId");
             selectedMicrocat = getArguments().getString("MCId") == null ? "" : getArguments().getString("MCId");
             selectedMicrocat = selectedMicrocat.equals("0") ? "" : selectedMicrocat;
-            getSuggestionsByFilter(selected_category,selected_subcategory,selectedContact,selectedSourceID,selectedBusiness,selectedIsLocal,selectedLocation,selectedMicrocat,1,selectedAreaCode);
+            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, selectedSourceID, selectedBusiness, selectedIsLocal, selectedLocation, selectedMicrocat, 1, selectedAreaCode);
 
-        }else if(getArguments() !=  null && getArguments().getBoolean("showRequestedSuggestions")){
+        } else if (getArguments() != null && getArguments().getBoolean("showRequestedSuggestions")) {
             getRequestedSuggestions();
-        }else if(getArguments() !=  null && getArguments().getBoolean("fromHome")){
+        } else if (getArguments() != null && getArguments().getBoolean("fromHome")) {
 
             fromHomePage = true;
 
@@ -365,12 +299,10 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             setSelectedColor(Integer.parseInt(selected_category));
 
             //getSuggestionsByFilter(selected_category,selected_subcategory,selectedContact,selectedSourceID,selectedBusiness,selectedIsLocal,selectedLocation,selectedMicrocat,1,selectedAreaCode);
-        }else{
+        } else {
             //getSuggestionsByFilter(selected_category,selected_subcategory,selectedContact,selectedSourceID,selectedBusiness,selectedIsLocal,selectedLocation,selectedMicrocat,1,selectedAreaCode);
         }
 
-
-        ll_holder_hangout.setBackground(getResources().getDrawable(R.drawable.blue_curve_bg));
 
         tv_nosuggestion = v.findViewById(R.id.tv_nosuggestion);
         fab_add_suggestion = v.findViewById(R.id.fab_add_suggestion);
@@ -412,7 +344,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
         recyc_allrequestedsuggestions = v.findViewById(R.id.recyc_allrequestedsuggestions);
         allrequests = new ArrayList<>();
-        requestsAdapter = new RequestsAdapter(allrequests,this,getActivity());
+        requestsAdapter = new RequestsAdapter(allrequests, this, getActivity());
 
         recyc_allrequestedsuggestions.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyc_allrequestedsuggestions.setItemAnimator(new DefaultItemAnimator());
@@ -431,37 +363,49 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        String cityId = null, areaCode = null;
         //showing selected area
-        if(selectedSubArea !=null){
+        //sub-area
+        if (selectedSubArea != null && !selectedSubArea.getDdValue().isEmpty()) {
             setSelectedAreaName(selectedSubArea.getDdText());
-            setSuggestionsByCurrentLocation(selectedSubArea.getDdText());
+            cityId = selectedSubArea.getCityId();
+            if (!TextUtils.isEmpty(selectedSubArea.getDdValue())) {
+                areaCode = selectedSubArea.getDdValue();
+                selectedAreaCode = selectedSubArea.getDdValue();
+            }
         }
-        else if (selectedCity != null){
+        //city
+        else if (selectedCity != null) {
             setSelectedAreaName(selectedCity.getDdText());
-            setSuggestionsByCurrentLocation(selectedCity.getDdText());
+            cityId = selectedCity.getCityId();
         }
+
         //showing categories
+        if (cityId != null)
+            session.setcurrentcity(Integer.parseInt(cityId));
+        getSuggestionsByFilter(selected_subcategory, selected_subcategory, null,
+                null, null, null, null, null, 1, areaCode);
     }
 
-    private void getAreaByPosition(int position){
+    private void getAreaByPosition(int position) {
 
-        if(allareas.get(position).getDdValue().equals("near")){
+        if (allareas.get(position).getDdValue().equals("near")) {
             getNearMeData();
-        }else if(allareas.get(position).getFilterType().equals("A")){
+        } else if (allareas.get(position).getFilterType().equals("A")) {
             //if  areacode
-            getDataWithAreaCode(position,allareas.get(position));
-        }else if(allareas.get(position).getFilterType().equals("C")){
+            getDataWithAreaCode(position, allareas.get(position));
+        } else if (allareas.get(position).getFilterType().equals("C")) {
             //if cities
-            getDataWithCity(position,allareas.get(position));
+            getDataWithCity(position, allareas.get(position));
         }
 
     }
 
-    private void getDataWithCity(int position,AreaData ad) {
+    private void getDataWithCity(int position, AreaData ad) {
 
-        selectedAreaCode = "";
+        selectedAreaCode = null;
         session.setcurrentcity(Integer.parseInt(ad.getDdValue()));
-        ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(ad.getDdText());
+        ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(ad.getDdText());
 
         getSuggestionsByFilter(selected_category,
                 selected_subcategory,
@@ -476,11 +420,11 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     }
 
-    private void getDataWithAreaCode(int position,AreaData ad) {
+    private void getDataWithAreaCode(int position, AreaData ad) {
 
-        session.setcurrentcity(1);
+        session.setcurrentcity(Integer.parseInt(ad.getCityId()));
         selectedAreaCode = ad.getDdValue();
-        ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(ad.getDdText());
+        ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(ad.getDdText());
 
         getSuggestionsByFilter(selected_category,
                 selected_subcategory,
@@ -496,84 +440,83 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     }
 
     //setting selected area
-    private void setSelectedAreaName(String selectedAreaName){
-        ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreaName);
+    private void setSelectedAreaName(String selectedAreaName) {
+        ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreaName);
     }
 
     private void getNearMeData() {
-        ((MainActivity)getActivity()).checkPermissionForLocation(MainActivity.LOAD_SUGGESTIONS);
+        ((MainActivity) getActivity()).checkPermissionForLocation(MainActivity.LOAD_SUGGESTIONS);
     }
 
-    private void getAreasByLocation(){
-        ((MainActivity)getActivity()).checkPermissionForLocation(MainActivity.LOAD_AREAS);
+    private void getAreasByLocation() {
+        ((MainActivity) getActivity()).checkPermissionForLocation(MainActivity.LOAD_AREAS);
     }
 
 
-    private void loadServingAreas(String suburb,String lat_lon,String address,String cityid) {
+    private void loadServingAreas(String suburb, String lat_lon, String address, String cityid) {
 
         FilterData filter = RetroClient.getClient().create(FilterData.class);
-        Call<AreasResponse> call = filter.getAreas(session.getToken(),session.getUserID(),suburb,lat_lon,address,cityid);
+        Call<AreasResponse> call = filter.getAreas(session.getToken(), session.getUserID(), suburb, lat_lon, address, cityid);
         call.enqueue(new Callback<AreasResponse>() {
             @Override
             public void onResponse(Call<AreasResponse> call, Response<AreasResponse> response) {
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
                     allareas = new ArrayList<>();
                     cityadapter.clear();
                     areas_title.clear();
 
-                    AreaData ad = new AreaData(0,"near","Near me","default",false);
+                    AreaData ad = new AreaData(0, "near", "Near me", "default", false);
 
                     allareas.add(ad);
                     allareas.addAll(response.body().getData());
 
                     AreaData selectedAreadata = null;
 
-                    for(AreaData a : allareas){
+                    for (AreaData a : allareas) {
                         cityadapter.add(a.getDdText());
                         areas_title.add(a.getDdText());
 
-                        if(a.isSelected()){
+                        if (a.isSelected()) {
                             //((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(a.getDdText());
                             selectedAreadata = a;
                         }
                     }
 
-                    if(selectedAreadata != null && (selectedCity == null && selectedSubArea == null)){
+                    if (selectedAreadata != null && (selectedCity == null && selectedSubArea == null)) {
 
-                        if(selectedAreadata.getDdValue().equals("near")){
+                        if (selectedAreadata.getDdValue().equals("near")) {
 
                             getNearMeData();
 
-                        }else if(selectedAreadata.getFilterType().equals("A")){
+                        } else if (selectedAreadata.getFilterType().equals("A")) {
 
                             session.setcurrentcity(1);
                             selectedAreaCode = selectedAreadata.getDdValue();
-                            ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
+                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
 
-                        }else if(selectedAreadata.getFilterType().equals("C")){
+                        } else if (selectedAreadata.getFilterType().equals("C")) {
                             session.setcurrentcity(Integer.parseInt(selectedAreadata.getDdValue()));
-                            ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
+                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
                         }
+                        getSuggestionsByFilter(selected_category,
+                                selected_subcategory,
+                                selectedContact,
+                                selectedSourceID,
+                                selectedBusiness,
+                                selectedIsLocal,
+                                selectedLocation,
+                                selectedMicrocat,
+                                1,
+                                selectedAreaCode);
                     }
-
-                    getSuggestionsByFilter(selected_category,
-                            selected_subcategory,
-                            selectedContact,
-                            selectedSourceID,
-                            selectedBusiness,
-                            selectedIsLocal,
-                            selectedLocation,
-                            selectedMicrocat,
-                            1,
-                            selectedAreaCode);
 
                     cityadapter.notifyDataSetChanged();
                     citypopup.setWidth(480);
 
 
-                }else{
+                } else {
                     loader.hideLoader();
                 }
 
@@ -587,42 +530,42 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     }
 
-    private void addRequestSuggestions(){
+    private void addRequestSuggestions() {
 
         Bundle b = new Bundle();
-        b.putString("selected_category",selected_category);
-        b.putString("selected_subcategory",selected_subcategory);
+        b.putString("selected_category", selected_category);
+        b.putString("selected_subcategory", selected_subcategory);
 
         RequestSuggestionsFragment reqFrag = new RequestSuggestionsFragment();
         reqFrag.setArguments(b);
 
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,reqFrag).addToBackStack(reqFrag.getClass().getSimpleName()).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, reqFrag).addToBackStack(reqFrag.getClass().getSimpleName()).commit();
 
     }
 
     private void loadServingCities() {
 
         FilterData f = RetroClient.getClient().create(FilterData.class);
-        Call<CityResponse> call =  f.getCities(session.getToken());
+        Call<CityResponse> call = f.getCities(session.getToken());
         call.enqueue(new Callback<CityResponse>() {
             @Override
             public void onResponse(Call<CityResponse> call, Response<CityResponse> response) {
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
-                    if(!session.getlastknownlocation().isEmpty()){
+                    if (!session.getlastknownlocation().isEmpty()) {
                         cityadapter.add("Near me - " + session.getlastknownlocation());
                         cities.add(session.getlastknownlocation());
                     }
 
                     allcities.addAll(response.body().getData());
 
-                    for(CityData c : allcities){
+                    for (CityData c : allcities) {
                         cityadapter.add(c.getCityName());
                         cities.add(c.getCityName());
 
-                        if(session.getcurrentcity() == Integer.parseInt(c.getCityId())){
-                            ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(c.getCityName());
+                        if (session.getcurrentcity() == Integer.parseInt(c.getCityId())) {
+                            ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(c.getCityName());
                         }
                     }
 
@@ -644,21 +587,21 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         ll_my_suggestions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            selectedMyAllCategory = 0;
-            selectedContact = session.getUserID();
+                selectedMyAllCategory = 0;
+                selectedContact = session.getUserID();
 
-            ll_my_suggestions.setBackground(getResources().getDrawable(R.drawable.mysuggestion_bg_selected));
-            ll_all_suggestions.setBackground(getResources().getDrawable(R.drawable.allsuggestions_bg_unselected));
+                ll_my_suggestions.setBackground(getResources().getDrawable(R.drawable.mysuggestion_bg_selected));
+                ll_all_suggestions.setBackground(getResources().getDrawable(R.drawable.allsuggestions_bg_unselected));
 
-            getSuggestionsByFilter(selected_category,
-                    selected_subcategory,
-                    selectedContact,
-                    selectedSourceID,
-                    selectedBusiness,
-                    selectedIsLocal,
-                    selectedLocation,
-                    selectedMicrocat,
-                    1,selectedAreaCode);
+                getSuggestionsByFilter(selected_category,
+                        selected_subcategory,
+                        selectedContact,
+                        selectedSourceID,
+                        selectedBusiness,
+                        selectedIsLocal,
+                        selectedLocation,
+                        selectedMicrocat,
+                        1, selectedAreaCode);
 
                 Log.d(TAG, "onClick: ");
             }
@@ -681,7 +624,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         selectedIsLocal,
                         selectedLocation,
                         selectedMicrocat,
-                        1,selectedAreaCode);
+                        1, selectedAreaCode);
             }
         });
     }
@@ -691,27 +634,35 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
         //businessnamse
         final FilterData filterapi = RetroClient.getClient().create(FilterData.class);
-        Call<GetBusinessResponse> call = filterapi.getBusinesses(session.getToken(),selected_category,selected_subcategory,session.getcurrentcity() + "");
+        Call<GetBusinessResponse> call = filterapi.getBusinesses(session.getToken(), selected_category, selected_subcategory, session.getcurrentcity() + "");
         call.enqueue(new Callback<GetBusinessResponse>() {
             @Override
             public void onResponse(Call<GetBusinessResponse> call, Response<GetBusinessResponse> response) {
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
                     filter_businessnames.clear();
 
-                    for(BusinessData d : response.body().getData()){
+                    for (BusinessData d : response.body().getData()) {
                         filter_businessnames.add(d.getBusinessName());
                     }
 
-                    if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                    if (loadcount > maxLoadCount) {
+                        loader.hideLoader();
+                    } else {
+                        loadcount++;
+                    }
 
                 }
             }
 
             @Override
             public void onFailure(Call<GetBusinessResponse> call, Throwable t) {
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
             }
         });
 
@@ -719,18 +670,22 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         //microcats
 
         Categories c = RetroClient.getClient().create(Categories.class);
-        Call<MicroCatResponse> callmicro = c.getSubCategory(session.getToken(),selected_subcategory);
+        Call<MicroCatResponse> callmicro = c.getSubCategory(session.getToken(), selected_subcategory);
         callmicro.enqueue(new Callback<MicroCatResponse>() {
             @Override
             public void onResponse(Call<MicroCatResponse> call, Response<MicroCatResponse> response) {
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
 
-                    if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                    if (loadcount > maxLoadCount) {
+                        loader.hideLoader();
+                    } else {
+                        loadcount++;
+                    }
 
                     filter_microcats.clear();
-                    for(MicroCatData m : response.body().getMessage()){
+                    for (MicroCatData m : response.body().getMessage()) {
                         filter_microcats.add(m.getName());
                     }
                 }
@@ -738,42 +693,55 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
             @Override
             public void onFailure(Call<MicroCatResponse> call, Throwable t) {
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
             }
         });
 
 
         //locations
         Location loc = RetroClient.getClient().create(Location.class);
-        Call<LocationsResponse> callloc = loc.getLocations(session.getToken(),"","" + session.getcurrentcity());
+        Call<LocationsResponse> callloc = loc.getLocations(session.getToken(), "", "" + session.getcurrentcity());
         callloc.enqueue(new Callback<LocationsResponse>() {
             @Override
             public void onResponse(Call<LocationsResponse> call, Response<LocationsResponse> response) {
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
-                    if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                    if (loadcount > maxLoadCount) {
+                        loader.hideLoader();
+                    } else {
+                        loadcount++;
+                    }
 
-                    if(response.code() == 200){
+                    if (response.code() == 200) {
 
                         filter_location.clear();
 
-                        for(LocationsData l : response.body().getMessage()){
-                            filter_location.add(l.getLocSuburb() + " - "  +  l.getSuburb());
+                        for (LocationsData l : response.body().getMessage()) {
+                            filter_location.add(l.getLocSuburb() + " - " + l.getSuburb());
                         }
                     }
 
                 }
             }
+
             @Override
             public void onFailure(Call<LocationsResponse> call, Throwable t) {
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
             }
         });
 
 
         //if call if being made on change of dropdown
-        if(maxLoadCount != 6)return;
+        if (maxLoadCount != 6) return;
 
 
         //sources
@@ -782,16 +750,20 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             @Override
             public void onResponse(Call<SourcesResponse> call, Response<SourcesResponse> response) {
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
                     filter_source_data.clear();
                     filter_source.clear();
 
-                    if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                    if (loadcount > maxLoadCount) {
+                        loader.hideLoader();
+                    } else {
+                        loadcount++;
+                    }
 
                     filter_source_data.addAll(response.body().getData());
 
-                    for(SourcesData s : response.body().getData()){
+                    for (SourcesData s : response.body().getData()) {
                         filter_source.add(s.getSource() + " - " + s.getContactNumber());
                     }
 
@@ -800,7 +772,11 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
             @Override
             public void onFailure(Call<SourcesResponse> call, Throwable t) {
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
             }
         });
 
@@ -810,16 +786,20 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             @Override
             public void onResponse(Call<ContactResponse> call, Response<ContactResponse> response) {
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
                     filter_contact_data.clear();
                     filter_contact.clear();
 
-                    if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                    if (loadcount > maxLoadCount) {
+                        loader.hideLoader();
+                    } else {
+                        loadcount++;
+                    }
 
                     filter_contact_data.addAll(response.body().getData());
 
-                    for(ContactData c : response.body().getData()){
+                    for (ContactData c : response.body().getData()) {
                         filter_contact.add(c.getContact() + " - " + c.getContactNumber());
                     }
                 }
@@ -827,7 +807,11 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
             @Override
             public void onFailure(Call<ContactResponse> call, Throwable t) {
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
             }
         });
 
@@ -839,35 +823,35 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                                         final int pageNumber, String areaShortCode) {
         //loader.showLoader("Fetching Suggestions");
         loader.showLoader();
-
         currentpageNumber = pageNumber;
 
         Suggestions suggestions = RetroClient.getClient().create(Suggestions.class);
         Call<SuggestionsResponse> call =
                 suggestions.getallsuggestionsbyfilterandcount(
-                        session.getToken(),categoryId,subCategoryId,
-                        contactId,sourceId,businessName,
-                        isLocal,location,microcategory,"" + session.getcurrentcity(),"" + pageNumber,areaShortCode);
+                        session.getToken(), categoryId, subCategoryId,
+                        contactId, sourceId, businessName,
+                        isLocal, location, microcategory, "" + session.getcurrentcity(), "" + pageNumber, areaShortCode);
 
         call.enqueue(new Callback<SuggestionsResponse>() {
             @Override
             public void onResponse(Call<SuggestionsResponse> call, Response<SuggestionsResponse> response) {
                 loader.hideLoader();
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
-                    if(response.body().getPageInfo() != null){
+                    if (response.body().getPageInfo() != null) {
 
                         tv_nosuggestion.setVisibility(GONE);
 
                         noOfRecord = response.body().getPageInfo().getNoOfRecord();
 
-                        if(response.body().getPageInfo().getPageNumber() == 1) allsuggestionsresponse.clear();
+                        if (response.body().getPageInfo().getPageNumber() == 1)
+                            allsuggestionsresponse.clear();
 
                         allsuggestionsresponse.addAll(response.body().getData());
                         setSuggestions(allsuggestionsresponse);
 
-                    }else{
+                    } else {
 
                         tv_nosuggestion.setVisibility(View.VISIBLE);
 
@@ -877,10 +861,10 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         suggestionsAdapter.notifyDataSetChanged();
                     }
 
-                }else{
+                } else {
 
                     try {
-                        ProcessError.processError(getActivity(),response.errorBody().string());
+                        ProcessError.processError(getActivity(), response.errorBody().string());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -890,8 +874,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             @Override
             public void onFailure(Call<SuggestionsResponse> call, Throwable t) {
                 loader.hideLoader();
-                if(getActivity()!= null)
-                Toast.makeText(getActivity(), "" + CONNETION_ERROR, Toast.LENGTH_SHORT).show();
+                if (getActivity() != null)
+                    Toast.makeText(getActivity(), "" + CONNETION_ERROR, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -900,10 +884,10 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
         allsuggestions.clear();
 
-        for(SuggestionData s : allsuggestiondatalist){
+        for (SuggestionData s : allsuggestiondatalist) {
 
-            if(s.getMicrocategoryId() == null)s.setMicrocategoryId("");
-            if(s.getMicrocategory() == null)s.setMicrocategory("");
+            if (s.getMicrocategoryId() == null) s.setMicrocategoryId("");
+            if (s.getMicrocategory() == null) s.setMicrocategory("");
 
             allsuggestions.add(s);
         }
@@ -912,7 +896,6 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
 
     }
-
 
 //    private void setSuggestions(ArrayList<SuggestionData> suggestions) {
 //
@@ -952,7 +935,6 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 //        categoryAdapter.notifyDataSetChanged();
 //    }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -969,17 +951,17 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == FILTERDIALOGCODE){
+        if (requestCode == FILTERDIALOGCODE) {
 
-            if(resultCode==0){
+            if (resultCode == 0) {
 
                 String sourceId_ = "";
                 selectedSourceName = data.getStringExtra("source");
-                for(SourcesData s : filter_source_data){
-                    if(!data.getStringExtra("source").isEmpty()
+                for (SourcesData s : filter_source_data) {
+                    if (!data.getStringExtra("source").isEmpty()
                             && data.getStringExtra("source").split("-").length > 1
                             && s.getContactNumber() != null
-                            && s.getContactNumber().equals(data.getStringExtra("source").split("-")[1].trim())){
+                            && s.getContactNumber().equals(data.getStringExtra("source").split("-")[1].trim())) {
                         sourceId_ = s.getSourceId();
                         selectedSourceID = sourceId_;
                     }
@@ -988,39 +970,41 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
                 String contact = "";
                 selectedContactName = data.getStringExtra("contact");
-                for(ContactData c : filter_contact_data){
-                    if(!data.getStringExtra("contact").isEmpty() && data.getStringExtra("contact").split("-").length > 1 && c.getContactNumber().equals(data.getStringExtra("contact").split("-")[1].trim())){
+                for (ContactData c : filter_contact_data) {
+                    if (!data.getStringExtra("contact").isEmpty() && data.getStringExtra("contact").split("-").length > 1 && c.getContactNumber().equals(data.getStringExtra("contact").split("-")[1].trim())) {
                         contact = c.getContactId();
                         selectedContact = contact;
                     }
                 }
 
-                if(selectedMyAllCategory == 0){selectedContact = session.getUserID();}
+                if (selectedMyAllCategory == 0) {
+                    selectedContact = session.getUserID();
+                }
 
                 selectedBusiness = data.getStringExtra("business");
                 selectedIsLocal = data.getStringExtra("islocal");
                 selectedLocation = data.getStringExtra("location");
                 selectedMicrocat = data.getStringExtra("microcat");
 
-                if(data.getStringExtra("reset_clicked").equalsIgnoreCase("true")){
+                if (data.getStringExtra("reset_clicked").equalsIgnoreCase("true")) {
                     selectedIsLocal = "";
                 }
 
                 AreaData areaData = data.getParcelableExtra("area_data");
-                if(areaData.getDdValue().equals("near")){
+                if (areaData.getDdValue().equals("near")) {
 
                     getNearMeData();
 
-                }else if(areaData.getFilterType().equals("A")){
+                } else if (areaData.getFilterType().equals("A")) {
 
-                    session.setcurrentcity(1);
+                    session.setcurrentcity(Integer.parseInt(areaData.getCityId()));
                     selectedAreaCode = areaData.getDdValue();
-                    ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(areaData.getDdText());
+                    ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(areaData.getDdText());
 
-                }else if(areaData.getFilterType().equals("C")){
+                } else if (areaData.getFilterType().equals("C")) {
                     selectedAreaCode = "";
                     session.setcurrentcity(Integer.parseInt(areaData.getDdValue()));
-                    ((TextView)ll_city_selector.findViewById(R.id.tv_cityname)).setText(areaData.getDdText());
+                    ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(areaData.getDdText());
                 }
 
 
@@ -1032,28 +1016,28 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         selectedIsLocal,
                         selectedLocation,
                         selectedMicrocat,
-                        1,selectedAreaCode);
+                        1, selectedAreaCode);
 
-            }else if(resultCode == 1){
+            } else if (resultCode == 1) {
 
-                getSuggestionsByFilter(selected_category,selected_subcategory,selectedContact,"","","","","",1,selectedAreaCode);
+                getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, "", "", "", "", "", 1, selectedAreaCode);
 
             }
         }
     }
 
 
-    private void setSelectedColor(int index){
+    private void setSelectedColor(int index) {
 
         ll_holder_hangout.setBackground(getResources().getDrawable(R.drawable.black_curve_bg));
         ll_holder_services.setBackground(getResources().getDrawable(R.drawable.black_curve_bg));
         ll_holder_shopping.setBackground(getResources().getDrawable(R.drawable.black_curve_bg));
 
-        if(index == 1){
+        if (index == 1) {
             ll_holder_hangout.setBackground(getResources().getDrawable(R.drawable.blue_curve_bg));
-        }else if(index == 2){
+        } else if (index == 2) {
             ll_holder_services.setBackground(getResources().getDrawable(R.drawable.blue_curve_bg));
-        }else if(index == 3){
+        } else if (index == 3) {
             ll_holder_shopping.setBackground(getResources().getDrawable(R.drawable.blue_curve_bg));
         }
 
@@ -1062,18 +1046,18 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     @Override
     public void onEditSuggestionClicked(final String suggestionId, final int isaCopyOrEdit) {
 
-        if(isaCopyOrEdit == ISA_COPY){
+        if (isaCopyOrEdit == ISA_COPY) {
 
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    switch (which){
+                    switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
-                            pushToEditPage(suggestionId,isaCopyOrEdit,"true");
+                            pushToEditPage(suggestionId, isaCopyOrEdit, "true");
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
-                            pushToEditPage(suggestionId,isaCopyOrEdit,"false");
+                            pushToEditPage(suggestionId, isaCopyOrEdit, "false");
 
                             break;
                     }
@@ -1084,26 +1068,26 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             builder.setMessage("Have you visited this place using Tag about it?").setPositiveButton("Yes", dialogClickListener)
                     .setNegativeButton("No", dialogClickListener).show();
 
-        }else{
-            pushToEditPage(suggestionId,isaCopyOrEdit,"false");
+        } else {
+            pushToEditPage(suggestionId, isaCopyOrEdit, "false");
         }
     }
 
-    private void pushToEditPage(String suggestionId, int isaCopyOrEdit,String isFromTag){
-        for (SuggestionData s : allsuggestions){
+    private void pushToEditPage(String suggestionId, int isaCopyOrEdit, String isFromTag) {
+        for (SuggestionData s : allsuggestions) {
 
-            if(s.getSuggestionId()!= null && s.getSuggestionId().equals(suggestionId)){
+            if (s.getSuggestionId() != null && s.getSuggestionId().equals(suggestionId)) {
 
                 Bundle b = new Bundle();
-                b.putString("edit","true");
-                b.putString("isfromtag",isFromTag);
-                b.putInt("copyOrEdit",isaCopyOrEdit);
-                b.putParcelable("suggestion",s);
+                b.putString("edit", "true");
+                b.putString("isfromtag", isFromTag);
+                b.putInt("copyOrEdit", isaCopyOrEdit);
+                b.putParcelable("suggestion", s);
 
                 Fragment f = new AddSuggestionFragment();
                 f.setArguments(b);
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,f).addToBackStack("edit").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, f).addToBackStack("edit").commit();
 
             }
         }
@@ -1112,9 +1096,9 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     @Override
     public void onEndOfRecycler() {
 
-        if(noOfRecord > (currentpageNumber * 20)){
+        if (noOfRecord > (currentpageNumber * 20)) {
             currentpageNumber++;
-            getSuggestionsByFilter(selected_category,selected_subcategory,selectedContact,"","","","","",currentpageNumber,selectedAreaCode);
+            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, "", "", "", "", "", currentpageNumber, selectedAreaCode);
         }
 
     }
@@ -1122,18 +1106,18 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     @Override
     public void onAddRequestClicked(String requestedSuggestionsId) {
 
-        for (RequestSuggestionsData r : allrequests){
+        for (RequestSuggestionsData r : allrequests) {
 
-            if(r.getUid().equals(requestedSuggestionsId)){
+            if (r.getUid().equals(requestedSuggestionsId)) {
 
                 Bundle b = new Bundle();
-                b.putString("isARequest","true");
-                b.putParcelable("requestedSuggestion",r);
+                b.putString("isARequest", "true");
+                b.putParcelable("requestedSuggestion", r);
 
                 Fragment f = new AddSuggestionFragment();
                 f.setArguments(b);
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,f).addToBackStack("request").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, f).addToBackStack("request").commit();
 
             }
         }
@@ -1142,7 +1126,6 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     @Override
     public void onDeleteSuggestionClicked(final String suggestionId, final int position) {
-
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -1154,13 +1137,13 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         loader.showLoader();
 
                         Suggestions suggestions = RetroClient.getClient().create(Suggestions.class);
-                        Call<DeleteSuggestionResponse> call = suggestions.deleteSuggestion(session.getToken(),new DeleteData(suggestionId,"delete"));
+                        Call<DeleteSuggestionResponse> call = suggestions.deleteSuggestion(session.getToken(), new DeleteData(suggestionId, "delete"));
                         call.enqueue(new Callback<DeleteSuggestionResponse>() {
                             @Override
                             public void onResponse(Call<DeleteSuggestionResponse> call, Response<DeleteSuggestionResponse> response) {
                                 loader.hideLoader();
 
-                                if(response.code() == 200){
+                                if (response.code() == 200) {
 
                                     allsuggestions.remove(position);
                                     suggestionsAdapter.notifyItemRemoved(position);
@@ -1187,8 +1170,6 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 }).show();
 
 
-
-
     }
 
     private void loadCategories(View v) {
@@ -1196,55 +1177,67 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         loader.showLoader();
 
         //PopupMenu hangoutspopup,servicespopup,shoppingpopup;
-        hangoutspopup = new PopupMenu(getActivity(),ll_holder_hangout);
-        servicespopup = new PopupMenu(getActivity(),ll_holder_services);
-        shoppingpopup = new PopupMenu(getActivity(),ll_holder_shopping);
+        hangoutspopup = new PopupMenu(getActivity(), ll_holder_hangout);
+        servicespopup = new PopupMenu(getActivity(), ll_holder_services);
+        shoppingpopup = new PopupMenu(getActivity(), ll_holder_shopping);
 
         hangoutdata = new ArrayList<>();
         servicesdata = new ArrayList<>();
         shoppingdata = new ArrayList<>();
 
         Categories c = RetroClient.getClient().create(Categories.class);
-        Call<SubCatResponse> call = c.getCategory(session.getToken(),"1");
+        Call<SubCatResponse> call = c.getCategory(session.getToken(), "1");
         call.enqueue(new Callback<SubCatResponse>() {
             @Override
             public void onResponse(Call<SubCatResponse> call, Response<SubCatResponse> response) {
 
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
 
                     int x = 0;
 
-                    hangoutdata.add(new SubCatData("","1",null,null,null,null));
-                    hangoutspopup.getMenu().add(1,-1,0,"Hangouts");
+                    hangoutdata.add(new SubCatData("", "1", null, null, null, null));
+                    hangoutspopup.getMenu().add(1, -1, 0, "Hangouts");
 
-                    for(SubCatData s : response.body().getMessage()){
+                    for (SubCatData s : response.body().getMessage()) {
                         x++;
 
                         hangoutdata.add(s);
-                        hangoutspopup.getMenu().add(Integer.parseInt(s.getCatId()),Integer.parseInt(s.getSubCatId()),x,s.getName());
+                        hangoutspopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x, s.getName());
                     }
 
-                }else{
+                } else {
 
                 }
             }
 
             @Override
             public void onFailure(Call<SubCatResponse> call, Throwable t) {
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
             }
         });
 
-        call = c.getCategory(session.getToken(),"2");
+        call = c.getCategory(session.getToken(), "2");
         call.enqueue(new Callback<SubCatResponse>() {
             @Override
             public void onResponse(Call<SubCatResponse> call, Response<SubCatResponse> response) {
 
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
 
-                if(response.code() == 200) {
+                if (response.code() == 200) {
 
 
                     int x = 0;
@@ -1259,25 +1252,33 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         servicespopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x, s.getName());
                     }
 
-                }else{
+                } else {
 
                 }
             }
 
             @Override
             public void onFailure(Call<SubCatResponse> call, Throwable t) {
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
             }
         });
 
-        call = c.getCategory(session.getToken(),"3");
+        call = c.getCategory(session.getToken(), "3");
         call.enqueue(new Callback<SubCatResponse>() {
             @Override
             public void onResponse(Call<SubCatResponse> call, Response<SubCatResponse> response) {
 
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
 
-                if(response.code() == 200) {
+                if (response.code() == 200) {
 
                     int x = 0;
 
@@ -1291,14 +1292,18 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         shoppingpopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x, s.getName());
                     }
 
-                }else{
+                } else {
 
                 }
             }
 
             @Override
             public void onFailure(Call<SubCatResponse> call, Throwable t) {
-                if(loadcount > maxLoadCount){loader.hideLoader();}else{loadcount++;}
+                if (loadcount > maxLoadCount) {
+                    loader.hideLoader();
+                } else {
+                    loadcount++;
+                }
             }
         });
 
@@ -1334,15 +1339,15 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 setSelectedColor(1);
 
                 selected_subcategory = "";
-                if(item.getItemId() != -1)selected_subcategory = item.getItemId() + "";
+                if (item.getItemId() != -1) selected_subcategory = item.getItemId() + "";
 
                 initiatefilterLoad();
 
-                if(isInRequestsMode){
+                if (isInRequestsMode) {
                     getRequestedSuggestions();
-                }else{
-                    getSuggestionsByFilter(selected_category,selected_subcategory,
-                            selectedContact,"","","","","",1,selectedAreaCode);
+                } else {
+                    getSuggestionsByFilter(selected_category, selected_subcategory,
+                            selectedContact, "", "", "", "", "", 1, selectedAreaCode);
                 }
 
 
@@ -1358,15 +1363,15 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 setSelectedColor(2);
 
                 selected_subcategory = "";
-                if(item.getItemId() != -1)selected_subcategory = item.getItemId() + "";
+                if (item.getItemId() != -1) selected_subcategory = item.getItemId() + "";
 
                 initiatefilterLoad();
 
-                if(isInRequestsMode){
+                if (isInRequestsMode) {
                     getRequestedSuggestions();
-                }else{
-                    getSuggestionsByFilter(selected_category,selected_subcategory,
-                            selectedContact,"","","","","",1,selectedAreaCode);
+                } else {
+                    getSuggestionsByFilter(selected_category, selected_subcategory,
+                            selectedContact, "", "", "", "", "", 1, selectedAreaCode);
                 }
 
                 return true;
@@ -1382,15 +1387,15 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 setSelectedColor(3);
 
                 selected_subcategory = "";
-                if(item.getItemId() != -1)selected_subcategory = item.getItemId() + "";
+                if (item.getItemId() != -1) selected_subcategory = item.getItemId() + "";
 
                 initiatefilterLoad();
 
-                if(isInRequestsMode){
+                if (isInRequestsMode) {
                     getRequestedSuggestions();
-                }else{
-                    getSuggestionsByFilter(selected_category,selected_subcategory,
-                            selectedContact,"","","","","",1,selectedAreaCode);
+                } else {
+                    getSuggestionsByFilter(selected_category, selected_subcategory,
+                            selectedContact, "", "", "", "", "", 1, selectedAreaCode);
                 }
 
                 return true;
@@ -1398,7 +1403,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         });
     }
 
-    public void initiatefilterLoad(){
+    public void initiatefilterLoad() {
 
         loadcount = 1;
         maxLoadCount = 3;
@@ -1406,7 +1411,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     }
 
-    private void getRequestedSuggestions(){
+    private void getRequestedSuggestions() {
 
         loader.showLoader();
 
@@ -1418,24 +1423,24 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         String requests_sub_category = selected_subcategory.isEmpty() ? "1" : selected_subcategory;
 
         RequestSuggestions r = RetroClient.getClient().create(RequestSuggestions.class);
-        Call<RequestSuggestionsResponse> call = r.getRequestedSuggestions(session.getToken(),selected_category,requests_sub_category,session.getcurrentcity() + "");
+        Call<RequestSuggestionsResponse> call = r.getRequestedSuggestions(session.getToken(), selected_category, requests_sub_category, session.getcurrentcity() + "");
         call.enqueue(new Callback<RequestSuggestionsResponse>() {
             @Override
             public void onResponse(Call<RequestSuggestionsResponse> call, Response<RequestSuggestionsResponse> response) {
                 loader.hideLoader();
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
                     allrequests.clear();
 
                     recyc_mysuggestions.setVisibility(GONE);
                     tv_nosuggestion.setVisibility(GONE);
 
-                    if(response.body().getData().size() > 0){
+                    if (response.body().getData().size() > 0) {
 
                         recyc_allrequestedsuggestions.setVisibility(VISIBLE);
                         allrequests.addAll(response.body().getData());
                         requestsAdapter.notifyDataSetChanged();
-                    }else{
+                    } else {
                         tv_nosuggestion.setText("No Requests found for this Category");
                         tv_nosuggestion.setVisibility(VISIBLE);
                     }
@@ -1450,46 +1455,43 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     }
 
-    public void setSuggestionsByCurrentLocation(String location){
+    public void setSuggestionsByCurrentLocation(String location) {
         Log.d(RetroClient.TAG, "test: " + location);
 
-        if(fromHomePage)return;
+        if (fromHomePage) return;
 
-        if(location != null){
+        if (location != null) {
             selectedAreaCode = "";
             selectedLocation = location;
 
-            getSuggestionsByFilter(selected_category,selected_subcategory,selectedContact,selectedSourceID,selectedBusiness,selectedIsLocal,selectedLocation,selectedMicrocat,1,selectedAreaCode);
-        }else{
-            getSuggestionsByFilter(selected_category,selected_subcategory,selectedContact,selectedSourceID,selectedBusiness,selectedIsLocal,selectedLocation,selectedMicrocat,1,selectedAreaCode);
+            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, selectedSourceID, selectedBusiness, selectedIsLocal, selectedLocation, selectedMicrocat, 1, selectedAreaCode);
+        } else {
+            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, selectedSourceID, selectedBusiness, selectedIsLocal, selectedLocation, selectedMicrocat, 1, selectedAreaCode);
         }
 
 
     }
 
-    public void setAreasByCurrentLocation(String location,String lat, String lon){
+    public void setAreasByCurrentLocation(String location, String lat, String lon) {
 
-        if(location.isEmpty()){
-            loadServingAreas("","","","" + session.getcurrentcity());
-        }else{
+        if (location.isEmpty()) {
+            loadServingAreas("", "", "", "" + session.getcurrentcity());
+        } else {
             String[] l = location.split(" ");
-            if(l.length > 1){
+            if (l.length > 1) {
                 l[l.length - 1] = "";
             }
 
             StringBuilder loc = new StringBuilder();
-            for(String s : l){
+            for (String s : l) {
                 loc.append(s);
             }
 
-            loadServingAreas(loc.toString(),lat + "," + lon,loc.toString(),"" + session.getcurrentcity());
+            loadServingAreas(loc.toString(), lat + "," + lon, loc.toString(), "" + session.getcurrentcity());
         }
 
 
-
-
     }
-
 
 
 }
