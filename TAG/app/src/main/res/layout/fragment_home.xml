@@ -47,7 +47,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:animateLayoutChanges="true">
 
             <LinearLayout
                 android:id="@+id/ll_upperblue_holder"
@@ -55,19 +56,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="30dp">
+                android:paddingBottom="30dp"
+                android:animateLayoutChanges="true">
 
 
                 <LinearLayout
                     android:id="@+id/ll_contact_location_holder"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:animateLayoutChanges="true">
 
                     <RelativeLayout
                         android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:animateLayoutChanges="true">
 
                         <LinearLayout
                             android:id="@+id/contactus"
@@ -94,16 +98,20 @@
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:animateLayoutChanges="true">
 
                             <!--city selector-->
                             <LinearLayout
                                 android:id="@+id/ll_city_selector"
+                                android:layout_height="36dp"
+                                android:layout_width="wrap_content"
                                 android:layout_marginRight="10dp"
                                 android:background="@drawable/blue_curve_bg"
-                                android:layout_width="90dp"
                                 android:gravity="center"
-                                android:layout_height="36dp"
+                                android:paddingLeft="16dp"
+                                android:paddingRight="16dp"
+                                android:animateLayoutChanges="true"
                                 android:orientation="horizontal">
 
                                 <TextView
@@ -129,10 +137,13 @@
                                 android:id="@+id/ll_sub_area_selector"
                                 android:layout_marginRight="10dp"
                                 android:background="@drawable/blue_curve_bg"
-                                android:layout_width="90dp"
+                                android:layout_width="wrap_content"
                                 android:gravity="center"
                                 android:layout_height="36dp"
-                                android:orientation="horizontal">
+                                android:orientation="horizontal"
+                                android:animateLayoutChanges="true"
+                                android:paddingLeft="16dp"
+                                android:paddingRight="16dp">
 
                                 <TextView
                                     android:id="@+id/tv_sub_area_name"
@@ -167,8 +178,6 @@
                                 android:text="Location" />
 
                         </LinearLayout>
-
-
 
 
                     </RelativeLayout>
@@ -220,6 +229,7 @@
                                 android:background="@drawable/notification_badge"
                                 android:padding="2dp"
                                 android:minWidth="25dp"
+                                android:minHeight="25dp"
                                 android:gravity="center"
                                 android:layout_alignParentRight="true"
                                 android:layout_width="wrap_content"
@@ -268,9 +278,11 @@
                                     android:background="@drawable/notification_badge"
                                     android:layout_alignParentRight="true"
                                     android:minWidth="25dp"
+                                    android:minHeight="25dp"
                                     android:gravity="center"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content">
+
                                     <TextView
                                         android:id="@+id/tv_servicescount"
                                         android:padding="4dp"
@@ -279,6 +291,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content" />
                                 </LinearLayout>
+
                                 <ImageView
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
@@ -286,8 +299,6 @@
                                     android:src="@drawable/service_w" />
 
                             </RelativeLayout>
-
-
 
 
                         </LinearLayout>
@@ -309,16 +320,18 @@
                                     android:background="@drawable/notification_badge"
                                     android:layout_alignParentRight="true"
                                     android:minWidth="25dp"
-
+                                    android:minHeight="25dp"
                                     android:layout_width="wrap_content"
+                                    android:gravity="center"
                                     android:layout_height="wrap_content">
-                                <TextView
-                                    android:id="@+id/tv_shoppingcount"
-                                    android:padding="4dp"
-                                    android:text="10"
-                                    android:textColor="@color/colorwhite"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" />
+
+                                    <TextView
+                                        android:id="@+id/tv_shoppingcount"
+                                        android:padding="4dp"
+                                        android:text="10"
+                                        android:textColor="@color/colorwhite"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content" />
                                 </LinearLayout>
 
                                 <ImageView
@@ -398,7 +411,6 @@
                     android:src="@drawable/ranking"
                     android:layout_width="40dp"
                     android:layout_height="40dp" />
-
 
 
             </RelativeLayout>

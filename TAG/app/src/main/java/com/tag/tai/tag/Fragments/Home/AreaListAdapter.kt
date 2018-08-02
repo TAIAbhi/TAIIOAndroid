@@ -60,15 +60,29 @@ open class AreaListAdapter(val mContext: Context, val areas: List<AreaData>)
 
 
     //getting selected area
-    fun getSelectedArea(): AreaData? {
-        if (selectedItemPosition >= 0 && selectedItemPosition < data.size)
-            return data[selectedItemPosition]
-        else
-            return null
+    @JvmOverloads
+    fun getSelectedArea(areaCode: String? = null, cityId: String? = null): AreaData? {
+        //getting from position
+        if (areaCode == null && cityId == null) {
+            if (selectedItemPosition >= 0 && selectedItemPosition < data.size)
+                return data[selectedItemPosition]
+            else
+                return null
+        }
+        //getting from list
+        else {
+            return data.filter {
+                (it.cityId == cityId || it.ddValue == areaCode)
+            }.let { filteredArea ->
+                if (filteredArea.size > 0)
+                    return@let filteredArea.get(0)
+                return@let null
+            }
+        }
     }
 
     //getting AreaData at position
-    fun get(position: Int): AreaData{
+    fun get(position: Int): AreaData {
         return data[position]
     }
 

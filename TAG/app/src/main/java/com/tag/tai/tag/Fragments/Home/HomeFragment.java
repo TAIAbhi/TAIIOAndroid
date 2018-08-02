@@ -294,13 +294,8 @@ public class HomeFragment extends Fragment implements SwipeCallback {
             }
         });
 
-
         //--------------------sub-areas
-
         ((MainActivity) getActivity()).checkPermissionForLocation(MainActivity.LOAD_HOME_AREAS);
-        getCategoryCounts();
-
-
         return v;
     }
 
@@ -378,8 +373,8 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
                         //filtering sub area
                         subAreasAdapter.getFilter().filter(selectedAreaData.getCityId());
-
                     }
+                    getCategoryCounts();
                 }
             }
 
@@ -401,16 +396,27 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(city);
     }
 
+    //setting all areaDara
+    private void setAllArea(AreaData city) {
+        AreaData allArea = subAreas.get(0);
+        allArea.setCityId(city.getCityId());
+        subAreasAdapter.notifyDataSetChanged();
+    }
+
     //if cities
     private void getCityByPosition(int position) {
-        AreaData area = citiesAdapter.get(position);
+        AreaData city = citiesAdapter.get(position);
         citiesAdapter.setSelectedArea(position);
-        subAreasAdapter.getFilter().filter(area.getCityId());
+
+        //settign sub areas
+        setAllArea(city);
+        subAreasAdapter.getFilter().filter(city.getCityId());
         subAreasAdapter.setSelectedItemPosition(0);
-        if (area.getDdValue().equals("near")) {
+
+        if (city.getDdValue().equals("near")) {
             getNearMeData();
         } else {
-            setDataWithCity(position, area);
+            setDataWithCity(position, city);
         }
     }
 
@@ -446,25 +452,25 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     }
 
     public void setAreasByCurrentLocation(String address, String location_split, String lat, String lon) {
-        //Toast.makeText(getActivity(), "" + location_split, Toast.LENGTH_SHORT).show();
-
         loadServingAreas(location_split, lat + "," + lon, address, "" + session.getcurrentcity());
-
     }
 
-    //cities--------------------------------------------
-
-
+    //fethcing category counts
     private void getCategoryCounts() {
+        String areaCode = null;
+        if (!selectedAreaCode.equalsIgnoreCase("all") && !selectedAreaCode.isEmpty())
+            areaCode = selectedAreaCode;
 
-
+        //preparing API endpoint
         Suggestions s = RetroClient.getClient().create(Suggestions.class);
         Call<CategoryCountResponse> call = s.getCategoryCount(
                 session.getToken(),
-                session.getUserMobile(),
-                "",
-                selectedAreaCode,
+                null,
+                null,
+                areaCode,
                 String.valueOf(session.getcurrentcity()));
+
+        //api hit
         call.enqueue(new Callback<CategoryCountResponse>() {
             @Override
             public void onResponse(Call<CategoryCountResponse> call, Response<CategoryCountResponse> response) {
@@ -472,39 +478,37 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                 //Log.d(RetroClient.TAG, "onResponse: what" + response.body().getData().getCategoryCountData().get(0).getCategoryName());
 
                 if (response.code() == 200) {
-
-                    //------------------------------------------------------
-
-                    tv_hangoutscount.setText("" + response.body().getData().getSectionCountData().get(0).getSuggCount());
-                    tv_servicescount.setText("" + response.body().getData().getSectionCountData().get(1).getSuggCount());
-                    tv_shoppingcount.setText("" + response.body().getData().getSectionCountData().get(2).getSuggCount());
-
-
-                    //------------------------------------------------------
-
-
+                    int hangoutsCount = 0, servicesCount = 0, shoppingsCount = 0;
                     for (CatergoryObject c : response.body().getData().getCategoryCountData()) {
                         if (c.getCatId() == 1) {
                             hangoutlist.add(c.getCategoryName());
                             hangoutsdata.add(c);
                             hangoutsadapter.add(c.getCategoryName());
+                            hangoutsCount += c.getSuggCount();
                         } else if (c.getCatId() == 2) {
                             serviceslist.add(c.getCategoryName());
                             servicesdata.add(c);
                             servicesadapter.add(c.getCategoryName());
+                            servicesCount += c.getSuggCount();
                         } else if (c.getCatId() == 3) {
                             shoppinglist.add(c.getCategoryName());
                             shoppingdata.add(c);
                             shoppingadapter.add(c.getCategoryName());
+                            shoppingsCount += c.getSuggCount();
                         }
                     }
-
+                    //notifying adapter
                     hangoutsadapter.notifyDataSetChanged();
                     servicesadapter.notifyDataSetChanged();
                     shoppingadapter.notifyDataSetChanged();
 
-                }
+                    //------------------------------------------------------
+                    tv_hangoutscount.setText(String.valueOf(hangoutsCount));
+                    tv_servicescount.setText(String.valueOf(servicesCount));
+                    tv_shoppingcount.setText(String.valueOf(shoppingsCount));
+                    //------------------------------------------------------
 
+                }
             }
 
             @Override
@@ -546,7 +550,6 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         }
 
     }
-
 
     @Override
     public void swipedItem(GestureListener.Direction direction, GestureListener.ItemCode itemcode) {
@@ -626,8 +629,8 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
                 b.putBoolean("fromHome", true);
                 b.putInt("homeCategory", itemcode.ordinal() + 1);
-                b.putParcelable("city", citiesAdapter.getSelectedArea());
-                b.putParcelable("subArea", subAreasAdapter.getSelectedArea());
+                b.putParcelable("city", citiesAdapter.getSelectedArea(null, String.valueOf(session.getcurrentcity())));
+                b.putParcelable("subArea", subAreasAdapter.getSelectedArea(selectedAreaCode, null));
                 findSuggestionsFragment.setArguments(b);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, findSuggestionsFragment, findSuggestionsFragment.getClass().getName()).commit();
                 break;

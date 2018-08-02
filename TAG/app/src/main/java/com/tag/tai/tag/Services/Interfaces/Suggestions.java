@@ -10,7 +10,6 @@ import com.tag.tai.tag.Services.Responses.GetSuggestions.SuggestionsResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.Header;
@@ -71,7 +70,7 @@ public interface Suggestions {
 
 
     //get suggestions count
-    @GET("api/getsectioncategorywithcount?uniqueCount=false")
+    @GET("api/getsectioncategorywithcount?uniqueCount=true")
     Call<CategoryCountResponse> getCategoryCount(@Header("Token") String token, @Query("contactNumber") String contact,
                                                  @Query("suburb") String suburb, @Query("areaCode") String areacode,
                                                  @Query("cityId") String cityid);

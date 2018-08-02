@@ -3,11 +3,9 @@ package com.tag.tai.tag.Fragments.FindSugesstions;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -29,15 +27,10 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.tag.tai.tag.Activities.MainActivity;
-import com.tag.tai.tag.Common.GestureListener;
 import com.tag.tai.tag.Common.Loader;
 import com.tag.tai.tag.Common.ProcessError;
 import com.tag.tai.tag.Common.SessionManager;
-
 import com.tag.tai.tag.Fragments.AddSuggestions.AddSuggestionFragment;
 import com.tag.tai.tag.Fragments.RequestSuggestions.RequestSuggestionsFragment;
 import com.tag.tai.tag.R;
@@ -79,7 +72,6 @@ import retrofit2.Response;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tag.tai.tag.Fragments.AddSuggestions.AddSuggestionFragment.ISAN_EDIT;
 import static com.tag.tai.tag.Fragments.AddSuggestions.AddSuggestionFragment.ISA_COPY;
 import static com.tag.tai.tag.Services.RetroClient.CONNETION_ERROR;
 import static com.tag.tai.tag.Services.RetroClient.TAG;
@@ -841,7 +833,10 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     } //end of filter elements
 
-    private void getSuggestionsByFilter(String categoryId, String subCategoryId, String contactId, String sourceId, String businessName, String isLocal, String location, String microcategory, final int pageNumber,String areaShortCode) {
+    private void getSuggestionsByFilter(String categoryId, String subCategoryId, String contactId,
+                                        String sourceId, String businessName, String isLocal,
+                                        String location, String microcategory,
+                                        final int pageNumber, String areaShortCode) {
         //loader.showLoader("Fetching Suggestions");
         loader.showLoader();
 

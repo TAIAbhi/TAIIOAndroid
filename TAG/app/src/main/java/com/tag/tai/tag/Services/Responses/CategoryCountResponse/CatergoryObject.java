@@ -6,9 +6,9 @@ public class CatergoryObject {
     String name;
     int subCatId;
     String categoryName;
-    String suggCount;
+    int suggCount;
 
-    public CatergoryObject(int catId, String name, int subCatId, String categoryName, String suggCount) {
+    public CatergoryObject(int catId, String name, int subCatId, String categoryName, int suggCount) {
         this.catId = catId;
         this.name = name;
         this.subCatId = subCatId;
@@ -48,11 +48,11 @@ public class CatergoryObject {
         this.categoryName = categoryName;
     }
 
-    public String getSuggCount() {
+    public int getSuggCount() {
         return suggCount;
     }
 
-    public void setSuggCount(String suggCount) {
+    public void setSuggCount(int suggCount) {
         this.suggCount = suggCount;
     }
 }
