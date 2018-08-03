@@ -383,7 +383,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         //showing categories
         if (cityId != null)
             session.setcurrentcity(Integer.parseInt(cityId));
-        getSuggestionsByFilter(selected_subcategory, selected_subcategory, null,
+        getSuggestionsByFilter(null, null, null,
                 null, null, null, null, null, 1, areaCode);
     }
 
@@ -1208,7 +1208,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         x++;
 
                         hangoutdata.add(s);
-                        hangoutspopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x, s.getName());
+                        hangoutspopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x,
+                                getString(R.string.category_name_count, s.getName(), s.getSubCatCount()));
                     }
 
                 } else {
@@ -1249,7 +1250,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         x++;
 
                         servicesdata.add(s);
-                        servicespopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x, s.getName());
+                        servicespopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x,
+                                getString(R.string.category_name_count, s.getName(), s.getSubCatCount()));
                     }
 
                 } else {
@@ -1289,7 +1291,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         x++;
 
                         shoppingdata.add(s);
-                        shoppingpopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x, s.getName());
+                        shoppingpopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x,
+                                getString(R.string.category_name_count, s.getName(), s.getSubCatCount()));
                     }
 
                 } else {

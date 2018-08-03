@@ -12,6 +12,7 @@ public class SubCatData {
     String microCategoryToolTip;
     String commentsToolTip;
     String isLocal;
+    int subCatCount;
 
     public SubCatData(String subCatId, String catId, String name, String microCategoryToolTip, String commentsToolTip, String isLocal) {
         this.subCatId = subCatId;
@@ -68,5 +69,13 @@ public class SubCatData {
 
     public void setCommentsToolTip(String commentsToolTip) {
         this.commentsToolTip = commentsToolTip;
+    }
+
+    public int getSubCatCount() {
+        return subCatCount;
+    }
+
+    public void setSubCatCount(int subCatCount) {
+        this.subCatCount = subCatCount;
     }
 }
