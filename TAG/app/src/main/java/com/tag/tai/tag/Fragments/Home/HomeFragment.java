@@ -186,7 +186,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         shopppingpopup.setAdapter(shoppingadapter);
 
         hangoutspopup.setHeight(ListPopupWindow.WRAP_CONTENT);
-        hangoutspopup.setWidth(400);
+        hangoutspopup.setWidth(480);
         hangoutspopup.setModal(true);
         hangoutspopup.setAnchorView(hangouts);
         hangoutspopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
