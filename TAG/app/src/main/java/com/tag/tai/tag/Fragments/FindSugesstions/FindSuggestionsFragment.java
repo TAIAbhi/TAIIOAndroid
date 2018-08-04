@@ -365,6 +365,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         String cityId = null, areaCode = null;
+        String category = null, subcategory = null;
+
         //showing selected area
         //sub-area
         if (selectedSubArea != null && !selectedSubArea.getDdValue().isEmpty()) {
@@ -381,10 +383,14 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             cityId = selectedCity.getCityId();
         }
 
+        category = "" + getArguments().getInt("homeCategory");
+        subcategory = "" + getArguments().getInt("homeSubCategory");
+
         //showing categories
         if (cityId != null)
             session.setcurrentcity(Integer.parseInt(cityId));
-        getSuggestionsByFilter(null, null, null,
+
+        getSuggestionsByFilter(category, subcategory, null,
                 null, null, null, null, null, 1, areaCode);
     }
 

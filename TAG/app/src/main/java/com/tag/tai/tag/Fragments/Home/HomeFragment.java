@@ -193,11 +193,8 @@ public class HomeFragment extends Fragment implements SwipeCallback {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String categoryName = hangoutsdata.get(position).getCategoryName();
-                //Toast.makeText(getActivity(), "" + categoryName, Toast.LENGTH_SHORT).show();
                 hangoutspopup.dismiss();
-
                 redirectToPageByDirection(hangoutsdata.get(position));
-
             }
         });
 
@@ -545,7 +542,6 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     }
 
     private void redirectToPageByDirection(CatergoryObject catergoryObject) {
-
         FindSuggestionsFragment findSuggestionsFragment = new FindSuggestionsFragment();
         AddSuggestionFragment addSuggestionFragment = new AddSuggestionFragment();
         Bundle b = new Bundle();
@@ -555,6 +551,8 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                 b.putBoolean("fromHome", true);
                 b.putInt("homeCategory", catergoryObject.getCatId());
                 b.putInt("homeSubCategory", catergoryObject.getSubCatId());
+                b.putParcelable("city", citiesAdapter.getSelectedArea(null, String.valueOf(session.getcurrentcity())));
+                b.putParcelable("subArea", subAreasAdapter.getSelectedArea(selectedAreaCode, null));
                 findSuggestionsFragment.setArguments(b);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, findSuggestionsFragment, findSuggestionsFragment.getClass().getName()).commit();
                 break;
@@ -666,12 +664,39 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
     }
 
+    //preparing bundle from View Suggestions
+    private Bundle prepareViewSuggestionsBundle(Bundle bundle) {
+        bundle.putParcelable("city", citiesAdapter.getSelectedArea(null, String.valueOf(session.getcurrentcity())));
+        bundle.putParcelable("subArea", subAreasAdapter.getSelectedArea(selectedAreaCode, null));
+        return bundle;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case DIALOG_FRAGMENT: {
                 if (resultCode == Activity.RESULT_OK) {
                     Log.d(RetroClient.TAG, "onActivityResult: " + data.getStringExtra("itemname"));
+                    int categoryId = data.getIntExtra("categoryid", -1);
+                    int position = data.getIntExtra("position", 0);
+                    CatergoryObject catergoryObject = null;
+
+                    //setting category
+                    switch (categoryId) {
+                        case 1: {
+                            catergoryObject = hangoutsdata.get(position);
+                            break;
+                        }
+                        case 2: {
+                            catergoryObject = servicesdata.get(position);
+                            break;
+                        }
+                        case 3: {
+                            catergoryObject = shoppingdata.get(position);
+                            break;
+                        }
+                    }
+                    redirectToPageByDirection(catergoryObject);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                 }
                 break;
@@ -715,7 +740,5 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         DialogList d = DialogList.newInstance(items, categoryId, intent);
         d.setTargetFragment(HomeFragment.this, DIALOG_FRAGMENT);
         d.show(getActivity().getSupportFragmentManager(), "itemsdialog");
-
-
     }
 }
