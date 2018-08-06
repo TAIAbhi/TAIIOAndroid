@@ -151,6 +151,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     int maxLoadCount = 6;
 
     boolean fromHomePage = false;
+    private Bundle args;
 
     public FindSuggestionsFragment() {
     }
@@ -158,7 +159,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
+        args = getArguments();
         if (args != null) {
             selectedCity = getArguments().getParcelable("city");
             selectedSubArea = getArguments().getParcelable("subArea");
@@ -383,8 +384,13 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             cityId = selectedCity.getCityId();
         }
 
-        category = "" + getArguments().getInt("homeCategory");
-        subcategory = "" + getArguments().getInt("homeSubCategory");
+        //setting subCategory and category
+        if (args != null) {
+            if (args.getInt("homeCategory") != 0)
+                category = "" + args.getInt("homeCategory");
+            if (args.getInt("homeSubCategory") != 0)
+                subcategory = "" + args.getInt("homeSubCategory");
+        }
 
         //showing categories
         if (cityId != null)
