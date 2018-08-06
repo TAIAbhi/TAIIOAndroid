@@ -41,6 +41,8 @@ import com.tag.tai.tag.Services.Interfaces.Location;
 import com.tag.tai.tag.Services.Interfaces.RequestSuggestions;
 import com.tag.tai.tag.Services.Interfaces.Suggestions;
 import com.tag.tai.tag.Services.Requests.DeleteSuggestion.DeleteData;
+import com.tag.tai.tag.Services.Responses.Categories.CategoryResponse;
+import com.tag.tai.tag.Services.Responses.Categories.CategoryWithSubCategories;
 import com.tag.tai.tag.Services.Responses.DeleteSuggestion.DeleteSuggestionResponse;
 import com.tag.tai.tag.Services.Responses.GetAreas.AreaData;
 import com.tag.tai.tag.Services.Responses.GetAreas.AreasResponse;
@@ -61,7 +63,6 @@ import com.tag.tai.tag.Services.Responses.MicroCat.MicroCatResponse;
 import com.tag.tai.tag.Services.Responses.RequestSuggestions.RequestSuggestionsData;
 import com.tag.tai.tag.Services.Responses.RequestSuggestions.RequestSuggestionsResponse;
 import com.tag.tai.tag.Services.Responses.SubCategories.SubCatData;
-import com.tag.tai.tag.Services.Responses.SubCategories.SubCatResponse;
 import com.tag.tai.tag.Services.RetroClient;
 
 import java.io.IOException;
@@ -150,6 +151,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     int maxLoadCount = 6;
 
     boolean fromHomePage = false;
+    private Bundle args;
 
     public FindSuggestionsFragment() {
     }
@@ -157,7 +159,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
+        args = getArguments();
         if (args != null) {
             selectedCity = getArguments().getParcelable("city");
             selectedSubArea = getArguments().getParcelable("subArea");
@@ -364,6 +366,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         String cityId = null, areaCode = null;
+        String category = null, subcategory = null;
+
         //showing selected area
         //sub-area
         if (selectedSubArea != null && !selectedSubArea.getDdValue().isEmpty()) {
@@ -380,10 +384,19 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             cityId = selectedCity.getCityId();
         }
 
+        //setting subCategory and category
+        if (args != null) {
+            if (args.getInt("homeCategory") != 0)
+                category = "" + args.getInt("homeCategory");
+            if (args.getInt("homeSubCategory") != 0)
+                subcategory = "" + args.getInt("homeSubCategory");
+        }
+
         //showing categories
         if (cityId != null)
             session.setcurrentcity(Integer.parseInt(cityId));
-        getSuggestionsByFilter(null, null, null,
+
+        getSuggestionsByFilter(category, subcategory, null,
                 null, null, null, null, null, 1, areaCode);
     }
 
@@ -1186,10 +1199,10 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         shoppingdata = new ArrayList<>();
 
         Categories c = RetroClient.getClient().create(Categories.class);
-        Call<SubCatResponse> call = c.getCategory(session.getToken(), "1");
-        call.enqueue(new Callback<SubCatResponse>() {
+        Call<CategoryResponse> call = c.getCategories(session.getToken(), "1");
+        call.enqueue(new Callback<CategoryResponse>() {
             @Override
-            public void onResponse(Call<SubCatResponse> call, Response<SubCatResponse> response) {
+            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
 
                 if (loadcount > maxLoadCount) {
                     loader.hideLoader();
@@ -1200,108 +1213,54 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 if (response.code() == 200) {
 
                     int x = 0;
-
+                    String subCategoryName = "";
+                    //hangouts
                     hangoutdata.add(new SubCatData("", "1", null, null, null, null));
                     hangoutspopup.getMenu().add(1, -1, 0, "Hangouts");
-
-                    for (SubCatData s : response.body().getMessage()) {
-                        x++;
-
-                        hangoutdata.add(s);
-                        hangoutspopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x,
-                                getString(R.string.category_name_count, s.getName(), s.getSubCatCount()));
-                    }
-
-                } else {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SubCatResponse> call, Throwable t) {
-                if (loadcount > maxLoadCount) {
-                    loader.hideLoader();
-                } else {
-                    loadcount++;
-                }
-            }
-        });
-
-        call = c.getCategory(session.getToken(), "2");
-        call.enqueue(new Callback<SubCatResponse>() {
-            @Override
-            public void onResponse(Call<SubCatResponse> call, Response<SubCatResponse> response) {
-
-                if (loadcount > maxLoadCount) {
-                    loader.hideLoader();
-                } else {
-                    loadcount++;
-                }
-
-                if (response.code() == 200) {
-
-
-                    int x = 0;
-
+                    //services
                     servicesdata.add(new SubCatData("", "2", null, null, null, null));
                     servicespopup.getMenu().add(2, -1, 0, "Services");
-
-                    for (SubCatData s : response.body().getMessage()) {
-                        x++;
-
-                        servicesdata.add(s);
-                        servicespopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x,
-                                getString(R.string.category_name_count, s.getName(), s.getSubCatCount()));
-                    }
-
-                } else {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SubCatResponse> call, Throwable t) {
-                if (loadcount > maxLoadCount) {
-                    loader.hideLoader();
-                } else {
-                    loadcount++;
-                }
-            }
-        });
-
-        call = c.getCategory(session.getToken(), "3");
-        call.enqueue(new Callback<SubCatResponse>() {
-            @Override
-            public void onResponse(Call<SubCatResponse> call, Response<SubCatResponse> response) {
-
-                if (loadcount > maxLoadCount) {
-                    loader.hideLoader();
-                } else {
-                    loadcount++;
-                }
-
-                if (response.code() == 200) {
-
-                    int x = 0;
-
+                    //shopping
                     shoppingdata.add(new SubCatData("", "3", null, null, null, null));
                     shoppingpopup.getMenu().add(3, -1, 0, "Shopping");
 
-                    for (SubCatData s : response.body().getMessage()) {
-                        x++;
-
-                        shoppingdata.add(s);
-                        shoppingpopup.getMenu().add(Integer.parseInt(s.getCatId()), Integer.parseInt(s.getSubCatId()), x,
-                                getString(R.string.category_name_count, s.getName(), s.getSubCatCount()));
+                    for (CategoryWithSubCategories category : response.body().getData()) {
+                        x = 0;
+                        for (SubCatData subCategory : category.getSubCategories()) {
+                            subCategoryName = getString(R.string.category_name_count, subCategory.getName(),
+                                    subCategory.getSubCatCount());
+                            x++;
+                            switch (subCategory.getCatId()) {
+                                //hangouts
+                                case "1":
+                                    hangoutdata.add(subCategory);
+                                    hangoutspopup.getMenu().add(Integer.parseInt(subCategory.getCatId()),
+                                            Integer.parseInt(subCategory.getSubCatId()), x,
+                                            subCategoryName);
+                                    break;
+                                //services
+                                case "2":
+                                    servicesdata.add(subCategory);
+                                    servicespopup.getMenu().add(Integer.parseInt(subCategory.getCatId()),
+                                            Integer.parseInt(subCategory.getSubCatId()), x,
+                                            subCategoryName);
+                                    break;
+                                //shopping
+                                case "3":
+                                    shoppingdata.add(subCategory);
+                                    shoppingpopup.getMenu().add(Integer.parseInt(subCategory.getCatId()),
+                                            Integer.parseInt(subCategory.getSubCatId()), x,
+                                            subCategoryName);
+                                    break;
+                            }
+                        }
                     }
-
-                } else {
 
                 }
             }
 
             @Override
-            public void onFailure(Call<SubCatResponse> call, Throwable t) {
+            public void onFailure(Call<CategoryResponse> call, Throwable t) {
                 if (loadcount > maxLoadCount) {
                     loader.hideLoader();
                 } else {
@@ -1309,7 +1268,6 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 }
             }
         });
-
 
         ll_holder_hangout.setOnClickListener(new View.OnClickListener() {
             @Override
