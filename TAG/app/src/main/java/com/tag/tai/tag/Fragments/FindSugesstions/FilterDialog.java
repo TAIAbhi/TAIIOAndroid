@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -26,7 +25,6 @@ import com.tag.tai.tag.Services.Responses.GetAreas.AreaData;
 import com.tag.tai.tag.Services.Responses.GetCities.CityData;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import static android.view.View.GONE;
 
@@ -190,7 +188,7 @@ public class FilterDialog extends DialogFragment {
         et_filter_by_source.setText(selectedSourceName);
         et_filter_by_contact.setText(selectedContactName);
 
-        if(selectedIsLocal.equalsIgnoreCase("true")){
+        if (selectedIsLocal != null && selectedIsLocal.equalsIgnoreCase("true")) {
             switch_local.setChecked(true);
         }else{
             switch_local.setChecked(false);
