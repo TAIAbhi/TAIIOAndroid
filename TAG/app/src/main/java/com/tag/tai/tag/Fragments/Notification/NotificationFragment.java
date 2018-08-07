@@ -25,8 +25,6 @@ import com.tag.tai.tag.Fragments.FindSugesstions.FindSuggestionsFragment;
 import com.tag.tai.tag.Fragments.MyDetails.MyDetailsFragment;
 import com.tag.tai.tag.Fragments.Rankings.RankingFragment;
 import com.tag.tai.tag.R;
-import com.tag.tai.tag.Services.Interfaces.MyDetails;
-import com.tag.tai.tag.Services.Interfaces.Notification;
 import com.tag.tai.tag.Services.Interfaces.Notifications;
 import com.tag.tai.tag.Services.Requests.NotificationDismiss.NotificationDismissRequest;
 import com.tag.tai.tag.Services.Responses.GetNotificationResponse.NotificationData;
@@ -37,7 +35,6 @@ import com.tag.tai.tag.Services.RetroClient;
 
 import java.util.ArrayList;
 
-import io.fabric.sdk.android.services.common.SafeToast;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -90,8 +87,8 @@ public class NotificationFragment extends Fragment implements NotificationListen
     private void getNotifications() {
 
         Notifications n = RetroClient.getClient().create(Notifications.class);
-        Call<NotificationResponse> call = n.getNotifications(session.getToken(),"1", "b480e7a958e6f13a");
-        //Call<NotificationResponse> call = n.getNotifications(session.getToken(),session.getUserID(), Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+        String deviceId = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+        Call<NotificationResponse> call = n.getNotifications(session.getToken(), session.getUserID(), null);
         call.enqueue(new Callback<NotificationResponse>() {
             @Override
             public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
