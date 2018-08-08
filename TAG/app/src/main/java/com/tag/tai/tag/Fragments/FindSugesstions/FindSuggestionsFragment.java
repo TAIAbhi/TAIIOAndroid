@@ -1202,7 +1202,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
         Categories c = RetroClient.getClient().create(Categories.class);
         Call<CategoryResponse> call = c.getCategories(session.getToken(), true,
-                Integer.parseInt(homeFilteredCity.getCityId()), null, null);
+                session.getcurrentcity(), selectedAreaCode, null);
         call.enqueue(new Callback<CategoryResponse>() {
             @Override
             public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
@@ -1384,7 +1384,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
         //Toast.makeText(getActivity(), "Requested Suggestions", Toast.LENGTH_SHORT).show();
 
-        String requests_sub_category = selected_subcategory.isEmpty() ? "1" : selected_subcategory;
+        String requests_sub_category = TextUtils.isEmpty(selected_subcategory) ? "1" : selected_subcategory;
 
         RequestSuggestions r = RetroClient.getClient().create(RequestSuggestions.class);
         Call<RequestSuggestionsResponse> call = r.getRequestedSuggestions(session.getToken(), selected_category, requests_sub_category, session.getcurrentcity() + "");

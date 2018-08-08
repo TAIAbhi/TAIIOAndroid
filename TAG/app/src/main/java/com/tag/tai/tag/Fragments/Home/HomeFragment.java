@@ -488,8 +488,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
                     for (CatergoryObject c : response.body().getData().getCategoryCountData()) {
                         //category name with count
-                        String categoryNameCount = getString(R.string.category_name_count,
-                                c.getCategoryName(), c.getSuggCount());
+                        String categoryNameCount = c.getCategoryName() + " (" + c.getSuggCount() + ")";
 
                         if (c.getCatId() == 1) {
                             //checking total category count
