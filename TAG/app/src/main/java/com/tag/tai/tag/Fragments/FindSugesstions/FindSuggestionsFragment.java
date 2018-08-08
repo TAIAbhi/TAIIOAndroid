@@ -1230,8 +1230,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                     for (CategoryWithSubCategories category : response.body().getData()) {
                         x = 0;
                         for (SubCatData subCategory : category.getSubCategories()) {
-                            subCategoryName = getString(R.string.category_name_count, subCategory.getName(),
-                                    subCategory.getSubCatCount());
+                            subCategoryName = subCategory.getName() + " (" + subCategory.getSubCatCount() + ")";
                             x++;
                             switch (subCategory.getCatId()) {
                                 //hangouts
