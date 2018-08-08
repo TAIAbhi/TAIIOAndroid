@@ -22,5 +22,9 @@ public interface Categories {
     Call<MicroCatResponse> getSubCategory(@Header("Token") String token, @Query("subcategoryId") String category);
 
     @GET("api/categories")
-    Call<CategoryResponse> getCategories(@Header("Token") String token, @Query("isRequest") String isRequestBool);
+    Call<CategoryResponse> getCategories(@Header("Token") String token,
+                                         @Query("isRequest") boolean isRequestBool,
+                                         @Query("cityId") int cityId,
+                                         @Query("areaShortCode") String areaCode,
+                                         @Query("location") String location);
 }

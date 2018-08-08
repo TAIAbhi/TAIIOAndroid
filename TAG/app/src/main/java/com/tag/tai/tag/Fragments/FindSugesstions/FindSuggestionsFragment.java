@@ -123,7 +123,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     PopupMenu hangoutspopup, servicespopup, shoppingpopup;
     ArrayList<SubCatData> hangoutdata, servicesdata, shoppingdata;
 
-    String selected_category = "1", selected_subcategory = "";
+    String selected_category = "1", selected_subcategory = null;
     int currentpageNumber, pageSize = 20, noOfRecord;
     int selectedMyAllCategory = 1;
 
@@ -144,7 +144,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     CardView cv_request_suggestions_option;
     TextView tv_request_suggestion, tv_view_requests;
-    AreaData selectedCity, selectedSubArea;
+    AreaData homeFilteredCity, homeFilteredSubArea;
 
     Loader loader;
     int loadcount = 1;
@@ -161,10 +161,10 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         super.onCreate(savedInstanceState);
         args = getArguments();
         if (args != null) {
-            selectedCity = getArguments().getParcelable("city");
-            selectedSubArea = getArguments().getParcelable("subArea");
-            if (selectedSubArea != null)
-                selectedAreaCode = selectedSubArea.getDdValue();
+            homeFilteredCity = args.getParcelable("city");
+            homeFilteredSubArea = args.getParcelable("subArea");
+            if (homeFilteredSubArea != null)
+                selectedAreaCode = homeFilteredSubArea.getDdValue();
         }
     }
 
@@ -289,14 +289,16 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             selectedMicrocat = selectedMicrocat.equals("0") ? "" : selectedMicrocat;
             getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, selectedSourceID, selectedBusiness, selectedIsLocal, selectedLocation, selectedMicrocat, 1, selectedAreaCode);
 
-        } else if (getArguments() != null && getArguments().getBoolean("showRequestedSuggestions")) {
+        } else if (args != null && args.getBoolean("showRequestedSuggestions")) {
             getRequestedSuggestions();
         } else if (getArguments() != null && getArguments().getBoolean("fromHome")) {
 
             fromHomePage = true;
 
-            selected_category = "" + getArguments().getInt("homeCategory");
-            selected_subcategory = "" + getArguments().getInt("homeSubCategory");
+            if (args.getInt("homeCategory") != 0)
+                selected_category = "" + getArguments().getInt("homeCategory");
+            if (args.getInt("homeSubCategory") != 0)
+                selected_subcategory = "" + getArguments().getInt("homeSubCategory");
 
             setSelectedColor(Integer.parseInt(selected_category));
 
@@ -370,18 +372,18 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
         //showing selected area
         //sub-area
-        if (selectedSubArea != null && !selectedSubArea.getDdValue().isEmpty()) {
-            setSelectedAreaName(selectedSubArea.getDdText());
-            cityId = selectedSubArea.getCityId();
-            if (!TextUtils.isEmpty(selectedSubArea.getDdValue())) {
-                areaCode = selectedSubArea.getDdValue();
-                selectedAreaCode = selectedSubArea.getDdValue();
+        if (homeFilteredSubArea != null && !homeFilteredSubArea.getDdValue().isEmpty()) {
+            setSelectedAreaName(homeFilteredSubArea.getDdText());
+            cityId = homeFilteredSubArea.getCityId();
+            if (!TextUtils.isEmpty(homeFilteredSubArea.getDdValue())) {
+                areaCode = homeFilteredSubArea.getDdValue();
+                selectedAreaCode = homeFilteredSubArea.getDdValue();
             }
         }
         //city
-        else if (selectedCity != null) {
-            setSelectedAreaName(selectedCity.getDdText());
-            cityId = selectedCity.getCityId();
+        else if (homeFilteredCity != null) {
+            setSelectedAreaName(homeFilteredCity.getDdText());
+            cityId = homeFilteredCity.getCityId();
         }
 
         //setting subCategory and category
@@ -497,7 +499,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         }
                     }
 
-                    if (selectedAreadata != null && (selectedCity == null && selectedSubArea == null)) {
+                    if (selectedAreadata != null && (homeFilteredCity == null && homeFilteredSubArea == null)) {
 
                         if (selectedAreadata.getDdValue().equals("near")) {
 
@@ -1111,7 +1113,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
         if (noOfRecord > (currentpageNumber * 20)) {
             currentpageNumber++;
-            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, "", "", "", "", "", currentpageNumber, selectedAreaCode);
+            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, null, null, null, null, null, currentpageNumber, selectedAreaCode);
         }
 
     }
@@ -1199,7 +1201,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         shoppingdata = new ArrayList<>();
 
         Categories c = RetroClient.getClient().create(Categories.class);
-        Call<CategoryResponse> call = c.getCategories(session.getToken(), "1");
+        Call<CategoryResponse> call = c.getCategories(session.getToken(), true,
+                Integer.parseInt(homeFilteredCity.getCityId()), null, null);
         call.enqueue(new Callback<CategoryResponse>() {
             @Override
             public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
