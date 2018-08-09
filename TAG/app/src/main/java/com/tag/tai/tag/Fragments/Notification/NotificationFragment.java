@@ -27,6 +27,7 @@ import com.tag.tai.tag.Fragments.Rankings.RankingFragment;
 import com.tag.tai.tag.R;
 import com.tag.tai.tag.Services.Interfaces.Notifications;
 import com.tag.tai.tag.Services.Requests.NotificationDismiss.NotificationDismissRequest;
+import com.tag.tai.tag.Services.Responses.GetNotificationResponse.Notification;
 import com.tag.tai.tag.Services.Responses.GetNotificationResponse.NotificationData;
 import com.tag.tai.tag.Services.Responses.GetNotificationResponse.NotificationResponse;
 import com.tag.tai.tag.Services.Responses.RequestSuggestions.RequestSuggestionsData;
@@ -149,25 +150,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
             }
 
             FindSuggestionsFragment f = new FindSuggestionsFragment();
-
-            Bundle b = new Bundle();
-            NotificationData d = notification.getData();
-            String location;
-
-            if (d.getLocationName() == null) {
-                location = "";
-            } else {
-                location = d.getLocationName().split("-").length > 2 ? d.getLocationName().split("-")[1] : d.getLocationName().split("-")[0];
-            }
-
-            //setting data
-            b.putBoolean("isFromNotification", true);
-            b.putString("LocationId", location);
-            b.putString("CatId", d.getCatId());
-            b.putString("SubCatId", d.getSubCatId());
-            b.putString("MCId", d.getMCId());
-
-            f.setArguments(b);
+            f.setArguments(createRedirectionBundle(notification));
             fm.beginTransaction().replace(R.id.container, f).commit();
         }
 
@@ -195,6 +178,25 @@ public class NotificationFragment extends Fragment implements NotificationListen
 
             fm.beginTransaction().replace(R.id.container, f).commit();
         }
+    }
+
+    //setting data
+    private Bundle createRedirectionBundle(Notification notification) {
+        String location;
+        NotificationData notificationData = notification.getData();
+        if (notificationData.getLocationName() == null) {
+            location = "";
+        } else {
+            location = notificationData.getLocationName().split("-").length > 2 ? notificationData.getLocationName().split("-")[1] : notificationData.getLocationName().split("-")[0];
+        }
+
+        Bundle b = new Bundle();
+        b.putBoolean("isFromNotification", true);
+        b.putString("LocationId", location);
+        b.putString("CatId", notificationData.getCatId());
+        b.putString("SubCatId", notificationData.getSubCatId());
+        b.putString("MCId", notificationData.getMCId());
+        return b;
     }
 
     @Override
