@@ -234,33 +234,26 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             public void onClick(View v) {
                 DialogFragment d = new FilterDialog();
                 Bundle b = new Bundle();
-
+                /*selected_subcategory,
+                        selectedContact,
+                        selectedSourceID,
+                        selectedBusiness,
+                        selectedIsLocal,
+                        selectedLocation,
+                        selectedMicrocat,*/
                 //sending dropdown data to dialog
                 b.putString("selected_category", selected_category);
-
                 b.putStringArrayList("filter_businessnames", filter_businessnames);
                 b.putStringArrayList("filter_microcats", filter_microcats);
                 b.putStringArrayList("filter_location", filter_location);
                 b.putStringArrayList("filter_source", filter_source);
                 b.putStringArrayList("filter_contact", filter_contact);
                 b.putParcelableArrayList("filter_allareas", allareas);
-/*
-                selected_subcategory,
-                        selectedContact,
-                        selectedSourceID,
-                        selectedBusiness,
-                        selectedIsLocal,
-                        selectedLocation,
-                        selectedMicrocat,
-*/
-
-
                 b.putString("selectedContactName", selectedContactName);
                 b.putString("selectedSourceName", selectedSourceName);
                 b.putString("selectedBusiness", selectedBusiness);
                 b.putString("selectedLocation", selectedLocation);
                 b.putString("selectedIsLocal", selectedIsLocal);
-
                 d.setArguments(b);
                 d.setTargetFragment(FindSuggestionsFragment.this, FILTERDIALOGCODE);
                 d.show(getActivity().getSupportFragmentManager(), "filter");
@@ -475,9 +468,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         call.enqueue(new Callback<AreasResponse>() {
             @Override
             public void onResponse(Call<AreasResponse> call, Response<AreasResponse> response) {
-
                 if (response.code() == 200) {
-
                     allareas = new ArrayList<>();
                     cityadapter.clear();
                     areas_title.clear();
@@ -500,17 +491,12 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                     }
 
                     if (selectedAreadata != null && (homeFilteredCity == null && homeFilteredSubArea == null)) {
-
                         if (selectedAreadata.getDdValue().equals("near")) {
-
                             getNearMeData();
-
                         } else if (selectedAreadata.getFilterType().equals("A")) {
-
                             session.setcurrentcity(1);
                             selectedAreaCode = selectedAreadata.getDdValue();
                             ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());
-
                         } else if (selectedAreadata.getFilterType().equals("C")) {
                             session.setcurrentcity(Integer.parseInt(selectedAreadata.getDdValue()));
                             ((TextView) ll_city_selector.findViewById(R.id.tv_cityname)).setText(selectedAreadata.getDdText());

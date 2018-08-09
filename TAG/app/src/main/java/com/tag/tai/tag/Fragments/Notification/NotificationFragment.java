@@ -126,20 +126,28 @@ public class NotificationFragment extends Fragment implements NotificationListen
     @Override
     public void notificationClicked(int position, com.tag.tai.tag.Services.Responses.GetNotificationResponse.Notification notification) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-
         //default
         if (notification.getNotificationType().equalsIgnoreCase("Default")) {
             Toast.makeText(getActivity(), "Default", Toast.LENGTH_SHORT).show();
+            //redirecting to viewSuggestions
+            String redirectTo = notification.getData().getRedirectTo();
+            if (redirectTo != null && redirectTo.equals("ViewSugg")) {
+                for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+                    fm.popBackStack();
+                }
+                replaceFragmentInMainContainer(fm, new FindSuggestionsFragment(),
+                        createRedirectionBundle(notification));
+            }
         }
 
         //Ranking
         else if (notification.getNotificationType().equalsIgnoreCase("Ranking")) {
-            fm.beginTransaction().replace(R.id.container, new RankingFragment()).commit();
+            replaceFragmentInMainContainer(fm, new RankingFragment(), null);
         }
 
         //my deatils
         else if (notification.getNotificationType().equalsIgnoreCase("MyDetails")) {
-            fm.beginTransaction().replace(R.id.container, new MyDetailsFragment()).commit();
+            replaceFragmentInMainContainer(fm, new MyDetailsFragment(), null);
         }
 
         //request for suggestion has been provided
@@ -149,9 +157,9 @@ public class NotificationFragment extends Fragment implements NotificationListen
                 fm.popBackStack();
             }
 
-            FindSuggestionsFragment f = new FindSuggestionsFragment();
-            f.setArguments(createRedirectionBundle(notification));
-            fm.beginTransaction().replace(R.id.container, f).commit();
+            replaceFragmentInMainContainer(fm,
+                    new FindSuggestionsFragment(),
+                    createRedirectionBundle(notification));
         }
 
         //request to add suggestion
@@ -173,10 +181,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
 
             b.putString("isARequest", "true");
             b.putParcelable("requestedSuggestion", rd);
-
-            f.setArguments(b);
-
-            fm.beginTransaction().replace(R.id.container, f).commit();
+            replaceFragmentInMainContainer(fm, f, b);
         }
     }
 
@@ -197,6 +202,15 @@ public class NotificationFragment extends Fragment implements NotificationListen
         b.putString("SubCatId", notificationData.getSubCatId());
         b.putString("MCId", notificationData.getMCId());
         return b;
+    }
+
+    //replaceing container
+    private void replaceFragmentInMainContainer(FragmentManager fragmentManager, Fragment fragment, Bundle args) {
+        fragment.setArguments(args);
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
     }
 
     @Override

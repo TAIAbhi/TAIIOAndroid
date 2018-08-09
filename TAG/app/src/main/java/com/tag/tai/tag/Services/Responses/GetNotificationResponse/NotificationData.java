@@ -13,6 +13,7 @@ public class NotificationData {
     String MCName;
     String addedBy;
     String addedWhen;
+    String redirectTo;
 
     public NotificationData(String target, String locationId, String catId, String subCatId, String MCId, String subCategoryName, String categoryName, String locationName, String MCName, String addedBy, String addedWhen) {
         this.target = target;
@@ -114,5 +115,13 @@ public class NotificationData {
 
     public void setMCId(String MCId) {
         this.MCId = MCId;
+    }
+
+    public String getRedirectTo() {
+        return redirectTo;
+    }
+
+    public void setRedirectTo(String redirectTo) {
+        this.redirectTo = redirectTo;
     }
 }
