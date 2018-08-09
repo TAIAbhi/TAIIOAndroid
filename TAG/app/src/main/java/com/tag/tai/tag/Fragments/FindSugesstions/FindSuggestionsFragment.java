@@ -281,24 +281,24 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         //-------------
 
         ll_holder_hangout.setBackground(getResources().getDrawable(R.drawable.blue_curve_bg));
-        if (getArguments() != null && getArguments().getBoolean("isFromNotification")) {
-            selectedLocation = getArguments().getString("LocationId");
-            selected_category = getArguments().getString("CatId");
-            selected_subcategory = getArguments().getString("SubCatId");
-            selectedMicrocat = getArguments().getString("MCId") == null ? "" : getArguments().getString("MCId");
+        if (args != null && args.getBoolean("isFromNotification")) {
+            selectedLocation = args.getString("LocationId");
+            selected_category = args.getString("CatId");
+            selected_subcategory = args.getString("SubCatId");
+            selectedMicrocat = args.getString("MCId") == null ? "" : args.getString("MCId");
             selectedMicrocat = selectedMicrocat.equals("0") ? "" : selectedMicrocat;
             getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, selectedSourceID, selectedBusiness, selectedIsLocal, selectedLocation, selectedMicrocat, 1, selectedAreaCode);
 
         } else if (args != null && args.getBoolean("showRequestedSuggestions")) {
             getRequestedSuggestions();
-        } else if (getArguments() != null && getArguments().getBoolean("fromHome")) {
+        } else if (args != null && args.getBoolean("fromHome")) {
 
             fromHomePage = true;
 
             if (args.getInt("homeCategory") != 0)
-                selected_category = "" + getArguments().getInt("homeCategory");
+                selected_category = "" + args.getInt("homeCategory");
             if (args.getInt("homeSubCategory") != 0)
-                selected_subcategory = "" + getArguments().getInt("homeSubCategory");
+                selected_subcategory = "" + args.getInt("homeSubCategory");
 
             setSelectedColor(Integer.parseInt(selected_category));
 
