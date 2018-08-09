@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.fragment_web_view.*
 
 const val DEFAULT_URL = "http://tagaboutit.com/Login/"
 public const val KEY_REDIRECT_TO = "redirectTo"
-
 class WebFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_web_view, container, false);
@@ -39,8 +38,7 @@ class WebFragment : Fragment() {
             getSettings().setLoadsImagesAutomatically(true)
             getSettings().setJavaScriptEnabled(true)
             setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY)
-            //loadUrl(arguments?.getString(KEY_REDIRECT_TO, DEFAULT_URL))
-            loadUrl("https://www.google.com/")
+            loadUrl(arguments?.getString(KEY_REDIRECT_TO, DEFAULT_URL))
         }
     }
 }
