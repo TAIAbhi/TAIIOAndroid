@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.tag.tai.tag.Common.SessionManager;
 import com.tag.tai.tag.Fragments.AddSuggestions.AddSuggestionFragment;
 import com.tag.tai.tag.Fragments.FindSugesstions.FindSuggestionsFragment;
 import com.tag.tai.tag.Fragments.MyDetails.MyDetailsFragment;
+import com.tag.tai.tag.Fragments.OthersFragment.WebFragment;
 import com.tag.tai.tag.Fragments.Rankings.RankingFragment;
 import com.tag.tai.tag.R;
 import com.tag.tai.tag.Services.Interfaces.Notifications;
@@ -41,6 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.view.View.VISIBLE;
+import static com.tag.tai.tag.Fragments.OthersFragment.WebFragmentKt.KEY_REDIRECT_TO;
 
 public class NotificationFragment extends Fragment implements NotificationListeners, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
@@ -127,15 +130,27 @@ public class NotificationFragment extends Fragment implements NotificationListen
     public void notificationClicked(int position, com.tag.tai.tag.Services.Responses.GetNotificationResponse.Notification notification) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         //default
+        NotificationData notificationData = notification.getData();
+        String redirectTo = notificationData.getRedirectTo();
+
+        //view suggestions screen
         if (notification.getNotificationType().equalsIgnoreCase("Default")) {
             Toast.makeText(getActivity(), "Default", Toast.LENGTH_SHORT).show();
+
+            //emptying stack
+            for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+                fm.popBackStack();
+            }
+
             //redirecting to viewSuggestions
-            String redirectTo = notification.getData().getRedirectTo();
             if (redirectTo != null && redirectTo.equals("ViewSugg")) {
-                for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
-                    fm.popBackStack();
-                }
                 replaceFragmentInMainContainer(fm, new FindSuggestionsFragment(),
+                        createRedirectionBundle(notification));
+            }
+            //url
+            else if (URLUtil.isHttpsUrl(redirectTo) || URLUtil.isHttpUrl(redirectTo)) {
+                replaceFragmentInMainContainer(fm,
+                        new WebFragment(),
                         createRedirectionBundle(notification));
             }
         }
@@ -201,6 +216,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
         b.putString("CatId", notificationData.getCatId());
         b.putString("SubCatId", notificationData.getSubCatId());
         b.putString("MCId", notificationData.getMCId());
+        b.putString(KEY_REDIRECT_TO, notificationData.getRedirectTo());
         return b;
     }
 

@@ -35,7 +35,7 @@ public class RankingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_feedback,container,false);
+        View v = inflater.inflate(R.layout.fragment_web_view, container, false);
 
         web_rankings = v.findViewById(R.id.web_feedback);
         web_rankings.setWebViewClient(new WebViewClient(){
