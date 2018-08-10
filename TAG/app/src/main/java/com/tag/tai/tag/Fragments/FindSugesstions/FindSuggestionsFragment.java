@@ -1186,8 +1186,12 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         servicesdata = new ArrayList<>();
         shoppingdata = new ArrayList<>();
 
+        boolean isRequest = false;
+        if (args != null && args.containsKey("showRequestedSuggestions")) {
+            isRequest = args.getBoolean("showRequestedSuggestions");
+        }
         Categories c = RetroClient.getClient().create(Categories.class);
-        Call<CategoryResponse> call = c.getCategories(session.getToken(), true,
+        Call<CategoryResponse> call = c.getCategories(session.getToken(), isRequest,
                 session.getcurrentcity(), selectedAreaCode, null);
         call.enqueue(new Callback<CategoryResponse>() {
             @Override
