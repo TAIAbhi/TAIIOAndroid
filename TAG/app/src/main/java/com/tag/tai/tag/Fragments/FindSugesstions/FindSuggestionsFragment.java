@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.tag.tai.tag.Activities.MainActivity;
 import com.tag.tai.tag.Common.Loader;
+import com.tag.tai.tag.Common.NotificationTypes;
 import com.tag.tai.tag.Common.ProcessError;
 import com.tag.tai.tag.Common.SessionManager;
 import com.tag.tai.tag.Fragments.AddSuggestions.AddSuggestionFragment;
@@ -74,6 +75,7 @@ import retrofit2.Response;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.tag.tai.tag.Common.ConstantsKt.KEY_NOTIFICATION_TYPE;
 import static com.tag.tai.tag.Common.ConstantsKt.KEY_SUGGESTION_ID;
 import static com.tag.tai.tag.Fragments.AddSuggestions.AddSuggestionFragment.ISA_COPY;
 import static com.tag.tai.tag.Services.RetroClient.CONNETION_ERROR;
@@ -277,11 +279,27 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         ll_holder_hangout.setBackground(getResources().getDrawable(R.drawable.blue_curve_bg));
         if (args != null && args.getBoolean("isFromNotification")) {
             selectedLocation = args.getString("LocationId");
-            selected_category = args.getString("CatId");
-            selected_subcategory = args.getString("SubCatId");
-            selectedMicrocat = args.getString("MCId") == null ? "" : args.getString("MCId");
-            selectedMicrocat = selectedMicrocat.equals("0") ? "" : selectedMicrocat;
-            selectedSuggestionId = String.valueOf(args.getInt(KEY_SUGGESTION_ID));
+
+            //micro category
+            selectedMicrocat = args.getString("MCId");
+            if (selectedMicrocat != null)
+                selectedMicrocat = selectedMicrocat.equals("0") ? null : selectedMicrocat;
+
+            //setting suggestion id
+            if (args.getInt(KEY_SUGGESTION_ID) != 0)
+                selectedSuggestionId = String.valueOf(args.getInt(KEY_SUGGESTION_ID));
+
+            //ignoring notifications for ceretain types
+            if (args.getString(KEY_NOTIFICATION_TYPE)
+                    .equalsIgnoreCase(NotificationTypes.Companion.getMODIFIED_SUGGESTION())) {
+                selected_subcategory = null;
+                selected_category = null;
+            } else {
+                selected_category = args.getString("CatId");
+                selected_subcategory = args.getString("SubCatId");
+            }
+
+            //filtering suggestions
             getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact,
                     selectedSourceID, selectedBusiness, selectedIsLocal,
                     selectedLocation, selectedMicrocat, 1, null, null);

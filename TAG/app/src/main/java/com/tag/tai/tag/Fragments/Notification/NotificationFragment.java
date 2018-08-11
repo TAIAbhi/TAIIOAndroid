@@ -45,6 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.view.View.VISIBLE;
+import static com.tag.tai.tag.Common.ConstantsKt.KEY_NOTIFICATION_TYPE;
 import static com.tag.tai.tag.Common.ConstantsKt.KEY_SUGGESTION_ID;
 import static com.tag.tai.tag.Fragments.OthersFragment.WebFragmentKt.KEY_REDIRECT_TO;
 
@@ -235,6 +236,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
         b.putString("MCId", notificationData.getMCId());
         b.putString(KEY_REDIRECT_TO, notificationData.getRedirectTo());
         b.putInt(KEY_SUGGESTION_ID, notificationData.getSuggestionId());
+        b.putString(KEY_NOTIFICATION_TYPE, notification.getNotificationType());
         return b;
     }
 
