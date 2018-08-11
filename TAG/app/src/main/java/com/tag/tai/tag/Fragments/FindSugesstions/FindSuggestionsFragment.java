@@ -278,7 +278,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
         ll_holder_hangout.setBackground(getResources().getDrawable(R.drawable.blue_curve_bg));
         if (args != null && args.getBoolean("isFromNotification")) {
-            selectedLocation = args.getString("LocationId");
+            selectedLocation = args.getString("location");
 
             //micro category
             selectedMicrocat = args.getString("MCId");
