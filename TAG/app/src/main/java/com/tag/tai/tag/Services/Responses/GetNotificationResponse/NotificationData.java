@@ -1,7 +1,7 @@
 package com.tag.tai.tag.Services.Responses.GetNotificationResponse;
 
 public class NotificationData {
-
+    int redirectToType;
     String target;
     String LocationId;
     String CatId;
@@ -14,6 +14,7 @@ public class NotificationData {
     String addedBy;
     String addedWhen;
     String redirectTo;
+    int suggestionId;
 
     public NotificationData(String target, String locationId, String catId, String subCatId, String MCId, String subCategoryName, String categoryName, String locationName, String MCName, String addedBy, String addedWhen) {
         this.target = target;
@@ -123,5 +124,21 @@ public class NotificationData {
 
     public void setRedirectTo(String redirectTo) {
         this.redirectTo = redirectTo;
+    }
+
+    public int getSuggestionId() {
+        return suggestionId;
+    }
+
+    public void setSuggestionId(int suggestionId) {
+        this.suggestionId = suggestionId;
+    }
+
+    public int getRedirectToType() {
+        return redirectToType;
+    }
+
+    public void setRedirectToType(int redirectToType) {
+        this.redirectToType = redirectToType;
     }
 }

@@ -74,6 +74,7 @@ import retrofit2.Response;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.tag.tai.tag.Common.ConstantsKt.KEY_SUGGESTION_ID;
 import static com.tag.tai.tag.Fragments.AddSuggestions.AddSuggestionFragment.ISA_COPY;
 import static com.tag.tai.tag.Services.RetroClient.CONNETION_ERROR;
 import static com.tag.tai.tag.Services.RetroClient.TAG;
@@ -127,8 +128,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     int currentpageNumber, pageSize = 20, noOfRecord;
     int selectedMyAllCategory = 1;
 
-    String selectedSourceID = null, selectedBusiness = null, selectedIsLocal = null, selectedLocation = null, selectedMicrocat = null, selectedContact = null;
-    String selectedSourceName = null, selectedContactName = null, selectedAreaCode = null;
+    String selectedSourceID, selectedBusiness, selectedIsLocal, selectedLocation, selectedMicrocat, selectedContact;
+    String selectedSourceName, selectedContactName, selectedAreaCode, selectedSuggestionId;
 
     //filter components end ------------------------------------------------------------------
 
@@ -280,7 +281,10 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
             selected_subcategory = args.getString("SubCatId");
             selectedMicrocat = args.getString("MCId") == null ? "" : args.getString("MCId");
             selectedMicrocat = selectedMicrocat.equals("0") ? "" : selectedMicrocat;
-            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, selectedSourceID, selectedBusiness, selectedIsLocal, selectedLocation, selectedMicrocat, 1, selectedAreaCode);
+            selectedSuggestionId = String.valueOf(args.getInt(KEY_SUGGESTION_ID));
+            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact,
+                    selectedSourceID, selectedBusiness, selectedIsLocal,
+                    selectedLocation, selectedMicrocat, 1, null, null);
 
         } else if (args != null && args.getBoolean("showRequestedSuggestions")) {
             getRequestedSuggestions();
@@ -391,8 +395,11 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         if (cityId != null)
             session.setcurrentcity(Integer.parseInt(cityId));
 
-        getSuggestionsByFilter(category, subcategory, null,
-                null, null, null, null, null, 1, areaCode);
+        if (homeFilteredCity != null && homeFilteredSubArea != null) {
+            getSuggestionsByFilter(category, subcategory, null,
+                    null, null, null, null,
+                    null, 1, "" + session.getcurrentcity(), areaCode);
+        }
     }
 
     private void getAreaByPosition(int position) {
@@ -424,7 +431,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 selectedLocation,
                 selectedMicrocat,
                 1,
-                selectedAreaCode);
+                "" + session.getcurrentcity(), selectedAreaCode);
 
     }
 
@@ -443,7 +450,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 selectedLocation,
                 selectedMicrocat,
                 1,
-                selectedAreaCode);
+                "" + session.getcurrentcity(), selectedAreaCode);
 
     }
 
@@ -510,7 +517,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                                 selectedLocation,
                                 selectedMicrocat,
                                 1,
-                                selectedAreaCode);
+                                "" + session.getcurrentcity(), selectedAreaCode);
                     }
 
                     cityadapter.notifyDataSetChanged();
@@ -602,7 +609,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         selectedIsLocal,
                         selectedLocation,
                         selectedMicrocat,
-                        1, selectedAreaCode);
+                        1, "" + session.getcurrentcity(), selectedAreaCode);
 
                 Log.d(TAG, "onClick: ");
             }
@@ -625,7 +632,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         selectedIsLocal,
                         selectedLocation,
                         selectedMicrocat,
-                        1, selectedAreaCode);
+                        1, "" + session.getcurrentcity(), selectedAreaCode);
             }
         });
     }
@@ -821,7 +828,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     private void getSuggestionsByFilter(String categoryId, String subCategoryId, String contactId,
                                         String sourceId, String businessName, String isLocal,
                                         String location, String microcategory,
-                                        final int pageNumber, String areaShortCode) {
+                                        final int pageNumber, String cityId, String areaShortCode) {
         //loader.showLoader("Fetching Suggestions");
         loader.showLoader();
         currentpageNumber = pageNumber;
@@ -831,7 +838,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 suggestions.getallsuggestionsbyfilterandcount(
                         session.getToken(), categoryId, subCategoryId,
                         contactId, sourceId, businessName,
-                        isLocal, location, microcategory, "" + session.getcurrentcity(), "" + pageNumber, areaShortCode);
+                        isLocal, location, microcategory, cityId, "" + pageNumber, areaShortCode, selectedSuggestionId);
 
         call.enqueue(new Callback<SuggestionsResponse>() {
             @Override
@@ -1017,11 +1024,13 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                         selectedIsLocal,
                         selectedLocation,
                         selectedMicrocat,
-                        1, selectedAreaCode);
+                        1, "" + session.getcurrentcity(), selectedAreaCode);
 
             } else if (resultCode == 1) {
 
-                getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, "", "", "", "", "", 1, selectedAreaCode);
+                getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, "",
+                        "", "", "", "", 1,
+                        "" + session.getcurrentcity(), selectedAreaCode);
 
             }
         }
@@ -1099,7 +1108,9 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
         if (noOfRecord > (currentpageNumber * 20)) {
             currentpageNumber++;
-            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, null, null, null, null, null, currentpageNumber, selectedAreaCode);
+            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact,
+                    null, null, null, null, null,
+                    currentpageNumber, "" + session.getcurrentcity(), selectedAreaCode);
         }
 
     }
@@ -1300,7 +1311,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                     getRequestedSuggestions();
                 } else {
                     getSuggestionsByFilter(selected_category, selected_subcategory,
-                            selectedContact, "", "", "", "", "", 1, selectedAreaCode);
+                            selectedContact, "", "", "", "", "",
+                            1, "" + session.getcurrentcity(), selectedAreaCode);
                 }
 
 
@@ -1324,7 +1336,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                     getRequestedSuggestions();
                 } else {
                     getSuggestionsByFilter(selected_category, selected_subcategory,
-                            selectedContact, "", "", "", "", "", 1, selectedAreaCode);
+                            selectedContact, "", "", "", "", "",
+                            1, "" + session.getcurrentcity(), selectedAreaCode);
                 }
 
                 return true;
@@ -1348,7 +1361,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                     getRequestedSuggestions();
                 } else {
                     getSuggestionsByFilter(selected_category, selected_subcategory,
-                            selectedContact, "", "", "", "", "", 1, selectedAreaCode);
+                            selectedContact, "", "", "", "", "",
+                            1, "" + session.getcurrentcity(), selectedAreaCode);
                 }
 
                 return true;
@@ -1416,13 +1430,10 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
         if (location != null) {
             selectedAreaCode = "";
             selectedLocation = location;
-
-            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, selectedSourceID, selectedBusiness, selectedIsLocal, selectedLocation, selectedMicrocat, 1, selectedAreaCode);
-        } else {
-            getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact, selectedSourceID, selectedBusiness, selectedIsLocal, selectedLocation, selectedMicrocat, 1, selectedAreaCode);
         }
-
-
+        getSuggestionsByFilter(selected_category, selected_subcategory, selectedContact,
+                selectedSourceID, selectedBusiness, selectedIsLocal,
+                selectedLocation, selectedMicrocat, 1, "" + session.getcurrentcity(), selectedAreaCode);
     }
 
     public void setAreasByCurrentLocation(String location, String lat, String lon) {

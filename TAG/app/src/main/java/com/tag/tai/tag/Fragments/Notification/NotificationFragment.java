@@ -1,5 +1,7 @@
 package com.tag.tai.tag.Fragments.Notification;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -43,6 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.view.View.VISIBLE;
+import static com.tag.tai.tag.Common.ConstantsKt.KEY_SUGGESTION_ID;
 import static com.tag.tai.tag.Fragments.OthersFragment.WebFragmentKt.KEY_REDIRECT_TO;
 
 public class NotificationFragment extends Fragment implements NotificationListeners, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
@@ -129,12 +132,12 @@ public class NotificationFragment extends Fragment implements NotificationListen
     @Override
     public void notificationClicked(int position, com.tag.tai.tag.Services.Responses.GetNotificationResponse.Notification notification) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        //default
         NotificationData notificationData = notification.getData();
         String redirectTo = notificationData.getRedirectTo();
+        String notificationType = notification.getNotificationType();
 
-        //view suggestions screen
-        if (notification.getNotificationType().equalsIgnoreCase("Default")) {
+        //default
+        if (notificationType.equalsIgnoreCase("Default")) {
             Toast.makeText(getActivity(), "Default", Toast.LENGTH_SHORT).show();
 
             //emptying stack
@@ -149,24 +152,28 @@ public class NotificationFragment extends Fragment implements NotificationListen
             }
             //url
             else if (URLUtil.isHttpsUrl(redirectTo) || URLUtil.isHttpUrl(redirectTo)) {
-                replaceFragmentInMainContainer(fm,
-                        new WebFragment(),
-                        createRedirectionBundle(notification));
+                if (notificationData.getRedirectToType() == 2) {
+                    replaceFragmentInMainContainer(fm,
+                            new WebFragment(),
+                            createRedirectionBundle(notification));
+                } else if (notificationData.getRedirectToType() == 3) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(redirectTo)));
+                }
             }
         }
 
         //Ranking
-        else if (notification.getNotificationType().equalsIgnoreCase("Ranking")) {
+        else if (notificationType.equalsIgnoreCase("Ranking")) {
             replaceFragmentInMainContainer(fm, new RankingFragment(), null);
         }
 
         //my deatils
-        else if (notification.getNotificationType().equalsIgnoreCase("MyDetails")) {
+        else if (notificationType.equalsIgnoreCase("MyDetails")) {
             replaceFragmentInMainContainer(fm, new MyDetailsFragment(), null);
         }
 
         //request for suggestion has been provided
-        else if (notification.getNotificationType().equalsIgnoreCase("Reqdsuggprovd")) {
+        else if (notificationType.equalsIgnoreCase("Reqdsuggprovd")) {
             Toast.makeText(getActivity(), "requestedProvided", Toast.LENGTH_SHORT).show();
             for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
                 fm.popBackStack();
@@ -177,8 +184,18 @@ public class NotificationFragment extends Fragment implements NotificationListen
                     createRedirectionBundle(notification));
         }
 
+        //modified your suggestion
+        else if (notificationType.equalsIgnoreCase("ModYourSug")) {
+            for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+                fm.popBackStack();
+            }
+            replaceFragmentInMainContainer(fm,
+                    new FindSuggestionsFragment(),
+                    createRedirectionBundle(notification));
+        }
+
         //request to add suggestion
-        else if (notification.getNotificationType().equalsIgnoreCase("ReqAddSug")) {
+        else if (notificationType.equalsIgnoreCase("ReqAddSug")) {
             Toast.makeText(getActivity(), "add suggestion", Toast.LENGTH_SHORT).show();
 
             for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
@@ -217,6 +234,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
         b.putString("SubCatId", notificationData.getSubCatId());
         b.putString("MCId", notificationData.getMCId());
         b.putString(KEY_REDIRECT_TO, notificationData.getRedirectTo());
+        b.putInt(KEY_SUGGESTION_ID, notificationData.getSuggestionId());
         return b;
     }
 

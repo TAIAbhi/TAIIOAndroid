@@ -42,19 +42,20 @@ public interface Suggestions {
                                                         @Query("pageNumber") String pageNumber);
 
 
-    @GET("api/getsuggestionwithcount?getall=2&pageSize=20&platform=2")
+    @GET("api/getsuggestionwithcount?pageSize=20")
     Call<SuggestionsResponse> getallsuggestionsbyfilterandcount(@Header("Token") String token,
-                                                        @Query("catId") String categoryId,
-                                                        @Query("subCatId") String subCatId,
-                                                        @Query("contactId") String contactId,
-                                                        @Query("sourceId") String sourceId,
-                                                        @Query("businessName") String businessName,
-                                                        @Query("isLocal") String isLocal,
-                                                        @Query("location") String location,
-                                                        @Query("microName") String microName,
-                                                        @Query("cityId") String cityId,
-                                                        @Query("pageNumber") String pageNumber,
-                                                        @Query("areaShortCode") String areaShortCode);
+                                                                @Query("catId") String categoryId,
+                                                                @Query("subCatId") String subCatId,
+                                                                @Query("contactId") String contactId,
+                                                                @Query("sourceId") String sourceId,
+                                                                @Query("businessName") String businessName,
+                                                                @Query("isLocal") String isLocal,
+                                                                @Query("location") String location,
+                                                                @Query("microName") String microName,
+                                                                @Query("cityId") String cityId,
+                                                                @Query("pageNumber") String pageNumber,
+                                                                @Query("areaShortCode") String areaShortCode,
+                                                                @Query("sugId") String SuggestionId);
 
     //add suggestions
     @POST("api/suggestion")
