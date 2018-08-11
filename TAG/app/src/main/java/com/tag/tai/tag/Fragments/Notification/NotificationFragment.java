@@ -231,6 +231,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
         Bundle b = new Bundle();
         b.putBoolean("isFromNotification", true);
         b.putString("LocationId", location);
+        b.putString("location", notificationData.getLocationName());
         b.putString("CatId", notificationData.getCatId());
         b.putString("SubCatId", notificationData.getSubCatId());
         b.putString("MCId", notificationData.getMCId());
