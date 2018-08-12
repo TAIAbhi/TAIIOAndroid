@@ -10,10 +10,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,13 +32,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.tag.tai.tag.Common.BottomNavigationViewHelper;
 import com.tag.tai.tag.Common.LoaderControl;
@@ -52,13 +47,10 @@ import com.tag.tai.tag.Fragments.Feedback.FeedbackFragment;
 import com.tag.tai.tag.Fragments.FindSugesstions.FindSuggestionsFragment;
 import com.tag.tai.tag.Fragments.HelpFragment.HelpFragment;
 import com.tag.tai.tag.Fragments.Home.HomeFragment;
-import com.tag.tai.tag.Fragments.Introduction.IntroductionFragment;
 import com.tag.tai.tag.Fragments.MyDetails.MyDetailsFragment;
 import com.tag.tai.tag.Fragments.Notification.NotificationFragment;
 import com.tag.tai.tag.Fragments.Rankings.RankingFragment;
-
 import com.tag.tai.tag.R;
-import com.tag.tai.tag.Services.Interfaces.MyDetails;
 import com.tag.tai.tag.Services.Interfaces.Notifications;
 import com.tag.tai.tag.Services.Requests.Notification.SaveRegistrationId;
 import com.tag.tai.tag.Services.Responses.GetNotificationResponse.NotificationResponse;
@@ -71,22 +63,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements LoaderControl{
+public class MainActivity extends AppCompatActivity implements LoaderControl {
 
     public BottomNavigationView bottomNavigationView;
     boolean isBackPressedOnce = false;
     SessionManager session;
 
-    ImageView tb_help,tb_ranking;
+    ImageView tb_help, tb_ranking;
     PopupMenu help_pop;
 
-    RelativeLayout tb_notification,rl_badge_holder;
+    RelativeLayout tb_notification, rl_badge_holder;
     TextView tv_badge_count;
 
     LinearLayout ll_loader;
@@ -101,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
     public static final int LOAD_SUGGESTIONS = 111;
     public static final int LOAD_HOME_SUGGESTIONS = 112;
     public static final int LOAD_HOME_AREAS = 113;
-
 
 
     @Override
@@ -121,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
             @Override
             public void onClick(View v) {
                 HomeFragment h = new HomeFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,h,h.getClass().getName()).addToBackStack(h.getClass().getName()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, h, h.getClass().getName()).addToBackStack(h.getClass().getName()).commit();
             }
         });
 
@@ -133,35 +123,35 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
             }
         });
 
-        help_pop = new PopupMenu(this,tb_help);
+        help_pop = new PopupMenu(this, tb_help);
 
-        help_pop.getMenu().add(0,1,1,"View Suggestions");
-        help_pop.getMenu().add(0,2,2,"Add Suggestion");
-        help_pop.getMenu().add(0,3,3,"My Details");
-        help_pop.getMenu().add(0,4,4,"Feedback");
-        help_pop.getMenu().add(0,5,5,"Concept Video");
-        help_pop.getMenu().add(0,6,6,"FAQ");
+        help_pop.getMenu().add(0, 1, 1, "View Suggestions");
+        help_pop.getMenu().add(0, 2, 2, "Add Suggestion");
+        help_pop.getMenu().add(0, 3, 3, "My Details");
+        help_pop.getMenu().add(0, 4, 4, "Feedback");
+        help_pop.getMenu().add(0, 5, 5, "Concept Video");
+        help_pop.getMenu().add(0, 6, 6, "FAQ");
 
         help_pop.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
                 Bundle b = new Bundle();
-                b.putInt("option",item.getItemId());
+                b.putInt("option", item.getItemId());
 
-                if(item.getItemId() == 5 || item.getItemId() == 6){
+                if (item.getItemId() == 5 || item.getItemId() == 6) {
 
-                    Intent i = new Intent(MainActivity.this,Help.class);
-                    i.putExtra("itemid",item.getItemId());
+                    Intent i = new Intent(MainActivity.this, Help.class);
+                    i.putExtra("itemid", item.getItemId());
                     startActivity(i);
 
 //                    IntroductionFragment introductionFragment = new IntroductionFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.container,introductionFragment).addToBackStack("intro").commit();
 
-                   }else{
+                } else {
                     HelpFragment helpFragment = new HelpFragment();
                     helpFragment.setArguments(b);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.container,helpFragment).addToBackStack("help").commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, helpFragment).addToBackStack("help").commit();
                 }
 
                 return false;
@@ -173,14 +163,14 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
         tb_ranking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,new RankingFragment()).addToBackStack("ranking").commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new RankingFragment()).addToBackStack("ranking").commit();
             }
         });
 
         notificationUpdateReciever = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d(RetroClient.TAG, "onReceive: ony hr redcivrtt" );
+                Log.d(RetroClient.TAG, "onReceive: ony hr redcivrtt");
                 //Toast.makeText(context, "Test " + getIntent().getStringExtra("added"), Toast.LENGTH_SHORT).show();
                 checkNotificationCount();
             }
@@ -197,13 +187,13 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
                 //Intent i = new Intent(MainActivity.this,NotificationActivity.class);
                 //startActivity(i);
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,new NotificationFragment()).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new NotificationFragment()).addToBackStack(null).commit();
 
             }
         });
 
         bottomNavigationView = findViewById(R.id.bottom_nav);
-        BottomNavigationViewHelper.removeShiftMode(MainActivity.this,bottomNavigationView);
+        BottomNavigationViewHelper.removeShiftMode(MainActivity.this, bottomNavigationView);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -224,8 +214,8 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
                         break;
                 }
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
-                transaction.replace(R.id.container, selectedFragment,selectedFragment.getClass().getName());
+                transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                transaction.replace(R.id.container, selectedFragment, selectedFragment.getClass().getName());
                 transaction.commit();
                 return true;
             }
@@ -235,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         //transaction.replace(R.id.container, new FindSuggestionsFragment(),new FindSuggestionsFragment().getClass().getName()).commit();
-        transaction.replace(R.id.container, homeFragment,homeFragment.getClass().getName()).commit();
+        transaction.replace(R.id.container, homeFragment, homeFragment.getClass().getName()).commit();
 
         String token = FirebaseInstanceId.getInstance().getToken();
         Log.d(RetroClient.TAG, "onCreate: " + token);
@@ -252,16 +242,16 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
 
 
         Notifications n = RetroClient.getClient().create(Notifications.class);
-        Call<NotificationResponse> call = n.getNotifications(session.getToken(),"1", "b480e7a958e6f13a");
+        Call<NotificationResponse> call = n.getNotifications(session.getToken(), "1", "b480e7a958e6f13a");
         //Call<NotificationResponse> call = n.getNotifications(session.getToken(),session.getUserID(), Settings.Secure.getS
         call.enqueue(new Callback<NotificationResponse>() {
             @Override
             public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
-                if(response.code() == 200){
-                    if(response.body().getData().size() > 0){
+                if (response.code() == 200) {
+                    if (response.body().getData().size() > 0) {
                         tv_badge_count.setText("" + response.body().getData().size());
                         rl_badge_holder.setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         //tv_badge_count.setText("" + response.body().getData().size());
                         rl_badge_holder.setVisibility(View.GONE);
                     }
@@ -279,13 +269,13 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
 
     public void checkPermissionForLocation(int location_purpose) {
 
-        if(ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //permission not granted
 
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     location_purpose);
-        }else{
+        } else {
 
             getCurrentLocation(location_purpose);
 
@@ -295,112 +285,107 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
     @SuppressLint("MissingPermission")
     private void getCurrentLocation(final int location_purpose) {
 
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
-            fusedLocationProviderClient.getLocationAvailability().addOnSuccessListener(new OnSuccessListener<LocationAvailability>() {
-                @Override
-                public void onSuccess(LocationAvailability locationAvailability) {
-                    locationAvailability.isLocationAvailable();
-                }
-            });
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
+        fusedLocationProviderClient.getLocationAvailability().addOnSuccessListener(new OnSuccessListener<LocationAvailability>() {
+            @Override
+            public void onSuccess(LocationAvailability locationAvailability) {
+                locationAvailability.isLocationAvailable();
+            }
+        });
 
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(MainActivity.this, new OnSuccessListener<android.location.Location>() {
-                @Override
-                public void onSuccess(android.location.Location location) {
-                    if(location != null){
-                        lastLocation = location;
-                        Log.d(RetroClient.TAG, "onSuccess: " + lastLocation.getLatitude());
-                        Log.d(RetroClient.TAG, "onSuccess: " + lastLocation.getLongitude());
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(MainActivity.this, new OnSuccessListener<android.location.Location>() {
+            @Override
+            public void onSuccess(android.location.Location location) {
+                if (location != null) {
+                    lastLocation = location;
+                    Log.d(RetroClient.TAG, "onSuccess: " + lastLocation.getLatitude());
+                    Log.d(RetroClient.TAG, "onSuccess: " + lastLocation.getLongitude());
 
-                        Geocoder g = new Geocoder(MainActivity.this, Locale.getDefault());
-                        List<Address> addressList;
+                    Geocoder g = new Geocoder(MainActivity.this, Locale.getDefault());
+                    List<Address> addressList;
 
-                        try {
+                    try {
 
 //                            addressList =  g.getFromLocation(19.2093305,73.0645624,1);
-                            addressList =  g.getFromLocation(lastLocation.getLatitude(),lastLocation.getLongitude(),1);
+                        addressList = g.getFromLocation(lastLocation.getLatitude(), lastLocation.getLongitude(), 1);
 //                            Log.d(RetroClient.TAG, "onSuccess: " + addressList.get(0).getSubLocality().split(" ")[0] );
 
-                            //Toast.makeText(MainActivity.this, "Fetching location", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Fetching location", Toast.LENGTH_SHORT).show();
 
-                            String location_split = addressList.get(0).getSubLocality().replace(" West", "").replace(" East","");
+                        String location_split = addressList.get(0).getSubLocality().replace(" West", "").replace(" East", "");
 
-                            session.setlastknownlocation(location_split);
+                        session.setlastknownlocation(location_split);
 
-                            Fragment f = getSupportFragmentManager().findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
-                            Fragment home = getSupportFragmentManager().findFragmentByTag(new HomeFragment().getClass().getName());
-                            if(f != null || home != null){
-                                if(location_purpose == LOAD_SUGGESTIONS)
-                                ((FindSuggestionsFragment)f).setSuggestionsByCurrentLocation(location_split);
-                                else if(location_purpose == LOAD_AREAS)
-                                ((FindSuggestionsFragment)f).setAreasByCurrentLocation(location_split,"" + lastLocation.getLatitude(),"" + lastLocation.getLongitude());
-                                else if(location_purpose == LOAD_HOME_SUGGESTIONS)
-                                ((HomeFragment)home).setTest(location_split,"" + lastLocation.getLatitude(),"" + lastLocation.getLongitude());
-                                else if(location_purpose == LOAD_HOME_AREAS)
-                                ((HomeFragment)home).setAreasByCurrentLocation(addressList.get(0).getAddressLine(0),location_split,"" + lastLocation.getLatitude(),"" + lastLocation.getLongitude());
+                        Fragment f = getSupportFragmentManager().findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
+                        Fragment home = getSupportFragmentManager().findFragmentByTag(new HomeFragment().getClass().getName());
+                        if (f != null || home != null) {
+                            if (location_purpose == LOAD_SUGGESTIONS)
+                                ((FindSuggestionsFragment) f).setSuggestionsByCurrentLocation(location_split);
+                            else if (location_purpose == LOAD_AREAS)
+                                ((FindSuggestionsFragment) f).setAreasByCurrentLocation(location_split, "" + lastLocation.getLatitude(), "" + lastLocation.getLongitude());
+                            else if (location_purpose == LOAD_HOME_SUGGESTIONS)
+                                ((HomeFragment) home).setTest(location_split, "" + lastLocation.getLatitude(), "" + lastLocation.getLongitude());
+                            else if (location_purpose == LOAD_HOME_AREAS)
+                                ((HomeFragment) home).setAreasByCurrentLocation(addressList.get(0).getAddressLine(0), location_split, "" + lastLocation.getLatitude(), "" + lastLocation.getLongitude());
 
-                            }
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
 
-
-
-
-                        if(lastLocation.getLongitude() > 18.75){
-                            lastLocationText = "Mumbai";
-                            session.setcurrentcity(1);
-                        }else{
-                            session.setcurrentcity(2);
-                            lastLocationText = "Pune";
-                        }
-
-                    }else{
-                        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-
-                        boolean gps_enabled = false;
-                        boolean network_enabled = false;
-
-                        gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                        network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-                        if(!gps_enabled && !network_enabled) {
-                            Utils.displayPromptForEnablingGPS(MainActivity.this);
-                        }else{
-                            Toast.makeText(MainActivity.this, "Couldn't fetch location at the moment.", Toast.LENGTH_SHORT).show();
-                        }
-
-
-
-                        //Toast.makeText(MainActivity.this, "Couldn't fetch location. Please turn on your GPS.", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+
+
+                    if (lastLocation.getLongitude() > 18.75) {
+                        lastLocationText = "Mumbai";
+                        session.setcurrentcity(1);
+                    } else {
+                        session.setcurrentcity(2);
+                        lastLocationText = "Pune";
+                    }
+
+                } else {
+                    LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                    boolean gps_enabled = false;
+                    boolean network_enabled = false;
+
+                    gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                    network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+                    if (!gps_enabled && !network_enabled) {
+                        Utils.displayPromptForEnablingGPS(MainActivity.this);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Couldn't fetch location at the moment.", Toast.LENGTH_SHORT).show();
+                    }
+                    //Toast.makeText(MainActivity.this, "Couldn't fetch location. Please turn on your GPS.", Toast.LENGTH_SHORT).show();
                 }
-            });
+            }
+        });
 
 
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode){
-            case LOAD_SUGGESTIONS : {
+        switch (requestCode) {
+            case LOAD_SUGGESTIONS: {
 
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //permission granted
                     getCurrentLocation(LOAD_SUGGESTIONS);
 
-                }else{
+                } else {
                     //permission not granted
                 }
                 return;
             }
-            case LOAD_AREAS : {
+            case LOAD_AREAS: {
 
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //permission granted
                     getCurrentLocation(LOAD_AREAS);
 
-                }else{
+                } else {
                     //permission not granted
                 }
                 return;
@@ -411,9 +396,9 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
 
     private void saveRegistrationId(String token) {
 
-        SaveRegistrationId data = new SaveRegistrationId(session.getUserID(),Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID),"2",token);
+        SaveRegistrationId data = new SaveRegistrationId(session.getUserID(), Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID), "2", token);
         Notifications n = RetroClient.getClient().create(Notifications.class);
-        Call<saveRegId> call = n.saveRegId(session.getToken(),data);
+        Call<saveRegId> call = n.saveRegId(session.getToken(), data);
 
         call.enqueue(new Callback<saveRegId>() {
             @Override
@@ -434,23 +419,23 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
 
 
         MyDetailsFragment frag = (MyDetailsFragment) getSupportFragmentManager().findFragmentByTag(new MyDetailsFragment().getClass().getName());
-        if(frag != null && frag.isVisible()){
-            if(frag.isAddingNewContact){
+        if (frag != null && frag.isVisible()) {
+            if (frag.isAddingNewContact) {
                 bottomNavigationView.setSelectedItemId(R.id.menu_mydetails);
             }
             //Toast.makeText(this, "is visible", Toast.LENGTH_SHORT).show();
         }
 
-        if(getSupportFragmentManager().getBackStackEntryCount() < 1){
+        if (getSupportFragmentManager().getBackStackEntryCount() < 1) {
 
-            if(isBackPressedOnce){
+            if (isBackPressedOnce) {
 
                 session.setlastsplashsreentime(Calendar.getInstance().getTimeInMillis());
-                Log.d("12345", "Exiting at "  + session.getlastsplashsreentime());
+                Log.d("12345", "Exiting at " + session.getlastsplashsreentime());
 
                 super.onBackPressed();
 
-            }else{
+            } else {
 
                 isBackPressedOnce = true;
 
@@ -461,10 +446,10 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
                     public void run() {
                         isBackPressedOnce = false;
                     }
-                },1000);
+                }, 1000);
             }
 
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
@@ -483,14 +468,18 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
     }
 
 
-    public void setBottomNavigationView(int i){
+    public void setBottomNavigationView(int i) {
 
-        switch(i){
+        switch (i) {
 
-            case 1: bottomNavigationView.setSelectedItemId(R.id.menu_findsuggestions);
-            case 2: bottomNavigationView.setSelectedItemId(R.id.menu_addsuggestions);
-            case 3: bottomNavigationView.setSelectedItemId(R.id.menu_mydetails);
-            case 4: bottomNavigationView.setSelectedItemId(R.id.menu_feedback);
+            case 1:
+                bottomNavigationView.setSelectedItemId(R.id.menu_findsuggestions);
+            case 2:
+                bottomNavigationView.setSelectedItemId(R.id.menu_addsuggestions);
+            case 3:
+                bottomNavigationView.setSelectedItemId(R.id.menu_mydetails);
+            case 4:
+                bottomNavigationView.setSelectedItemId(R.id.menu_feedback);
             default:
 
         }
@@ -500,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl{
     @Override
     protected void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(notificationUpdateReciever,new IntentFilter(Message.NOTIFICATION_UPDATED));
+        LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(notificationUpdateReciever, new IntentFilter(Message.NOTIFICATION_UPDATED));
     }
 
     @Override
