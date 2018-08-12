@@ -1242,27 +1242,30 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                     int noOfCategories = 0;
                     String subCategoryName = "", hangoutsTitle = "", servicesTitle = "", shoppingTitle = "";
                     List<CategoryWithSubCategories> categories = response.body().getData();
-                    CategoryWithSubCategories hangouts = categories.get(0),
-                            services = categories.get(1),
-                            shopping = categories.get(2);
 
-                    //hangouts
-                    hangoutsTitle = hangouts.getName() + " (" + hangouts.getCatCount() + ")";
-                    hangoutdata.add(new SubCatData("", "1", null, null, null, null));
-                    hangoutspopup.getMenu().add(1, -1, 0, hangoutsTitle);
-                    tvHangouts.setText(hangoutsTitle);
+                    if (categories.size() > 0) {
+                        CategoryWithSubCategories hangouts = categories.get(0),
+                                services = categories.get(1),
+                                shopping = categories.get(2);
 
-                    //services
-                    servicesTitle = services.getName() + " (" + services.getCatCount() + ")";
-                    servicesdata.add(new SubCatData("", "2", null, null, null, null));
-                    servicespopup.getMenu().add(2, -1, 0, servicesTitle);
-                    tvServices.setText(servicesTitle);
+                        //hangouts
+                        hangoutsTitle = hangouts.getName() + " (" + hangouts.getCatCount() + ")";
+                        hangoutdata.add(new SubCatData("", "1", null, null, null, null));
+                        hangoutspopup.getMenu().add(1, -1, 0, hangoutsTitle);
+                        tvHangouts.setText(hangoutsTitle);
 
-                    //shopping
-                    shoppingTitle = shopping.getName() + " (" + shopping.getCatCount() + ")";
-                    shoppingdata.add(new SubCatData("", "3", null, null, null, null));
-                    shoppingpopup.getMenu().add(3, -1, 0, shoppingTitle);
-                    tvShopping.setText(shoppingTitle);
+                        //services
+                        servicesTitle = services.getName() + " (" + services.getCatCount() + ")";
+                        servicesdata.add(new SubCatData("", "2", null, null, null, null));
+                        servicespopup.getMenu().add(2, -1, 0, servicesTitle);
+                        tvServices.setText(servicesTitle);
+
+                        //shopping
+                        shoppingTitle = shopping.getName() + " (" + shopping.getCatCount() + ")";
+                        shoppingdata.add(new SubCatData("", "3", null, null, null, null));
+                        shoppingpopup.getMenu().add(3, -1, 0, shoppingTitle);
+                        tvShopping.setText(shoppingTitle);
+                    }
 
 
                     //browsing and populating subCategories

@@ -570,6 +570,16 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                 break;
 
             }
+            case LEFT: {
+                Fragment requestSuggestionsFragment = new RequestSuggestionsFragment();
+                b.putString("selected_category", String.valueOf(catergoryObject.getCatId()));
+                b.putString("selected_subcategory", String.valueOf(catergoryObject.getSubCatId()));
+                requestSuggestionsFragment.setArguments(b);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, requestSuggestionsFragment,
+                        requestSuggestionsFragment.getClass().getName()).commit();
+
+                break;
+            }
         }
 
     }
@@ -624,28 +634,19 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 //                break;
             }
             case RIGHT: {
-
-//                if(itemcode.ordinal() == 0){
-//                    hangoutspopup.show();
-//                }else if(itemcode.ordinal() == 1){
-//                    servicespopup.show();
-//                }else if(itemcode.ordinal() == 2){
-//                    shopppingpopup.show();
-//                }
-//              break;
-
                 b.putBoolean("showRequestedSuggestions", true);
                 addSuggestionFragment.setArguments(b);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, addSuggestionFragment, addSuggestionFragment.getClass().getName()).commit();
                 break;
             }
             case LEFT: {
-
-                b.putString("selected_category", itemcode.ordinal() + 1 + "");
-                b.putString("selected_subcategory", "");
-                requestSuggestionsFragment.setArguments(b);
-
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, requestSuggestionsFragment, requestSuggestionsFragment.getClass().getName()).commit();
+                if (itemcode.ordinal() == 0) {
+                    hangoutspopup.show();
+                } else if (itemcode.ordinal() == 1) {
+                    servicespopup.show();
+                } else if (itemcode.ordinal() == 2) {
+                    shopppingpopup.show();
+                }
                 break;
             }
             case TAPPED: {
