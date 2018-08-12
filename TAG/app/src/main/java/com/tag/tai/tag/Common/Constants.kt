@@ -8,6 +8,6 @@ class NotificationTypes {
         val DEFAULT = "deafult"
         val MODIFIED_SUGGESTION = "ModYourSug"
         val REQUEST_PROVIDED = "Reqdsuggprovd"
-
+        val PROVIDE_SUGGESTION = "ProvdReqdsugg"
     }
 }

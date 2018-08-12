@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tag.tai.tag.Activities.MainActivity;
+import com.tag.tai.tag.Common.NotificationTypes;
 import com.tag.tai.tag.Common.RecyclerItemTouchHelper;
 import com.tag.tai.tag.Common.SessionManager;
 import com.tag.tai.tag.Fragments.AddSuggestions.AddSuggestionFragment;
@@ -203,18 +204,54 @@ public class NotificationFragment extends Fragment implements NotificationListen
                 fm.popBackStack();
             }
 
-            AddSuggestionFragment f = new AddSuggestionFragment();
-
             Bundle b = new Bundle();
-            NotificationData d = notification.getData();
-            RequestSuggestionsData rd = new RequestSuggestionsData("", d.getCategoryName(), d.getCatId(),
-                    d.getSubCategoryName(), d.getSubCatId(), "", d.getMCId() == "0" ? "" : d.getMCId(),
-                    d.getLocationName(), "", "", "", "",
+            RequestSuggestionsData rd = new RequestSuggestionsData("",
+                    notificationData.getCategoryName(),
+                    notificationData.getCatId(),
+                    notificationData.getSubCategoryName(),
+                    notificationData.getSubCatId(),
+                    "",
+                    notificationData.getMCId() == "0" ? "" : notificationData.getMCId(),
+                    notificationData.getLocationName(),
+                    "", "", "", "",
                     "", "", "", "", "");
 
             b.putString("isARequest", "true");
             b.putParcelable("requestedSuggestion", rd);
-            replaceFragmentInMainContainer(fm, f, b);
+            replaceFragmentInMainContainer(fm, new AddSuggestionFragment(), b);
+        }
+
+        //provide requested suggestion
+        else if (notificationType.equalsIgnoreCase(NotificationTypes.Companion.getPROVIDE_SUGGESTION())) {
+            //emptying stack
+            for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+                fm.popBackStack();
+            }
+
+            //redirecting to viewSuggestions
+            if (redirectTo != null && redirectTo.equals("ViewSugg")) {
+                replaceFragmentInMainContainer(fm, new FindSuggestionsFragment(),
+                        createRedirectionBundle(notification));
+            }
+
+            //redirecting to add Suggestions
+            else if (redirectTo != null && redirectTo.equals("AddSugg")) {
+                Bundle b = new Bundle();
+                RequestSuggestionsData rd = new RequestSuggestionsData("",
+                        notificationData.getCategoryName(),
+                        notificationData.getCatId(),
+                        notificationData.getSubCategoryName(),
+                        notificationData.getSubCatId(),
+                        "",
+                        notificationData.getMCId() == "0" ? "" : notificationData.getMCId(),
+                        notificationData.getLocationName(),
+                        "", "", "", "",
+                        "", "", "", "", "");
+
+                b.putString("isARequest", "true");
+                b.putParcelable("requestedSuggestion", rd);
+                replaceFragmentInMainContainer(fm, new AddSuggestionFragment(), b);
+            }
         }
     }
 
