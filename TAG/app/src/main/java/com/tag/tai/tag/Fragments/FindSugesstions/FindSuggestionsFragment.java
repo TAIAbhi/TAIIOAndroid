@@ -68,6 +68,7 @@ import com.tag.tai.tag.Services.RetroClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -107,7 +108,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     ImageView fab_add_suggestion;
 
-    TextView tv_nosuggestion;
+    TextView tv_nosuggestion, tvHangouts, tvServices, tvShopping;
 
     SessionManager session;
 
@@ -324,6 +325,9 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
 
         tv_nosuggestion = v.findViewById(R.id.tv_nosuggestion);
+        tvHangouts = v.findViewById(R.id.tv_hangouts);
+        tvServices = v.findViewById(R.id.tv_services);
+        tvShopping = v.findViewById(R.id.tv_shopping);
         fab_add_suggestion = v.findViewById(R.id.fab_add_suggestion);
         fab_add_suggestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1235,18 +1239,34 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 if (response.code() == 200) {
 
                     int x = 0;
-                    String subCategoryName = "";
-                    //hangouts
-                    hangoutdata.add(new SubCatData("", "1", null, null, null, null));
-                    hangoutspopup.getMenu().add(1, -1, 0, "Hangouts");
-                    //services
-                    servicesdata.add(new SubCatData("", "2", null, null, null, null));
-                    servicespopup.getMenu().add(2, -1, 0, "Services");
-                    //shopping
-                    shoppingdata.add(new SubCatData("", "3", null, null, null, null));
-                    shoppingpopup.getMenu().add(3, -1, 0, "Shopping");
+                    int noOfCategories = 0;
+                    String subCategoryName = "", hangoutsTitle = "", servicesTitle = "", shoppingTitle = "";
+                    List<CategoryWithSubCategories> categories = response.body().getData();
+                    CategoryWithSubCategories hangouts = categories.get(0),
+                            services = categories.get(1),
+                            shopping = categories.get(2);
 
-                    for (CategoryWithSubCategories category : response.body().getData()) {
+                    //hangouts
+                    hangoutsTitle = hangouts.getName() + " (" + hangouts.getCatCount() + ")";
+                    hangoutdata.add(new SubCatData("", "1", null, null, null, null));
+                    hangoutspopup.getMenu().add(1, -1, 0, hangoutsTitle);
+                    tvHangouts.setText(hangoutsTitle);
+
+                    //services
+                    servicesTitle = services.getName() + " (" + services.getCatCount() + ")";
+                    servicesdata.add(new SubCatData("", "2", null, null, null, null));
+                    servicespopup.getMenu().add(2, -1, 0, servicesTitle);
+                    tvServices.setText(servicesTitle);
+
+                    //shopping
+                    shoppingTitle = shopping.getName() + " (" + shopping.getCatCount() + ")";
+                    shoppingdata.add(new SubCatData("", "3", null, null, null, null));
+                    shoppingpopup.getMenu().add(3, -1, 0, shoppingTitle);
+                    tvShopping.setText(shoppingTitle);
+
+
+                    //browsing and populating subCategories
+                    for (CategoryWithSubCategories category : categories) {
                         x = 0;
                         for (SubCatData subCategory : category.getSubCategories()) {
                             subCategoryName = subCategory.getName() + " (" + subCategory.getSubCatCount() + ")";
@@ -1319,6 +1339,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 selected_category = "" + item.getGroupId();
 
                 setSelectedColor(1);
+                tvHangouts.setText(item.getTitle());
 
                 selected_subcategory = "";
                 if (item.getItemId() != -1) selected_subcategory = item.getItemId() + "";
@@ -1344,6 +1365,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 selected_category = "" + item.getGroupId();
 
                 setSelectedColor(2);
+                tvServices.setText(item.getTitle());
 
                 selected_subcategory = "";
                 if (item.getItemId() != -1) selected_subcategory = item.getItemId() + "";
@@ -1369,6 +1391,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 selected_category = "" + item.getGroupId();
 
                 setSelectedColor(3);
+                tvShopping.setText(item.getTitle());
 
                 selected_subcategory = "";
                 if (item.getItemId() != -1) selected_subcategory = item.getItemId() + "";

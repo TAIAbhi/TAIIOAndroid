@@ -22,10 +22,13 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tv_hangouts"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/colorwhite"
                 android:layout_gravity="center_vertical"
                 android:text="Hangouts"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -43,10 +46,13 @@
 
 
             <TextView
+                android:id="@+id/tv_services"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/colorwhite"
                 android:layout_gravity="center_vertical"
                 android:text="Services"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -64,10 +70,13 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tv_shopping"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/colorwhite"
                 android:layout_gravity="center_vertical"
                 android:text="Shopping"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
