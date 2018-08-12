@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -449,13 +450,16 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     }
 
     public void setAreasByCurrentLocation(String address, String location_split, String lat, String lon) {
-        loadServingAreas(location_split, lat + "," + lon, address, "" + session.getcurrentcity());
+        String lat_long = null;
+        if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lon))
+            lat_long = lat + "," + lon;
+        loadServingAreas(location_split, lat_long, address, "" + session.getcurrentcity());
     }
 
     //fethcing category counts
     private void getCategoryCounts() {
         String areaCode = null;
-        if (!selectedAreaCode.equalsIgnoreCase("all") && !selectedAreaCode.isEmpty())
+        if (selectedAreaCode != null && !selectedAreaCode.equalsIgnoreCase("all") && !selectedAreaCode.isEmpty())
             areaCode = selectedAreaCode;
 
         //preparing API endpoint

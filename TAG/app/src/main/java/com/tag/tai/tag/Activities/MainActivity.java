@@ -367,30 +367,31 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case LOAD_SUGGESTIONS: {
-
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //permission granted
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            switch (requestCode) {
+                case LOAD_SUGGESTIONS: {
                     getCurrentLocation(LOAD_SUGGESTIONS);
-
-                } else {
-                    //permission not granted
+                    return;
                 }
-                return;
-            }
-            case LOAD_AREAS: {
-
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //permission granted
+                case LOAD_AREAS: {
                     getCurrentLocation(LOAD_AREAS);
-
-                } else {
-                    //permission not granted
+                    return;
                 }
-                return;
             }
-
+        } else {
+            session.setcurrentcity(1);
+            Fragment f = getSupportFragmentManager().findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
+            Fragment home = getSupportFragmentManager().findFragmentByTag(new HomeFragment().getClass().getName());
+            if (f != null || home != null) {
+                if (requestCode == LOAD_SUGGESTIONS)
+                    ((FindSuggestionsFragment) f).setSuggestionsByCurrentLocation(null);
+                else if (requestCode == LOAD_AREAS)
+                    ((FindSuggestionsFragment) f).setAreasByCurrentLocation(null, "", "");
+                else if (requestCode == LOAD_HOME_SUGGESTIONS)
+                    ((HomeFragment) home).setTest(null, "", "");
+                else if (requestCode == LOAD_HOME_AREAS)
+                    ((HomeFragment) home).setAreasByCurrentLocation(null, null, "", "");
+            }
         }
     }
 
