@@ -383,14 +383,15 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
             Fragment f = getSupportFragmentManager().findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
             Fragment home = getSupportFragmentManager().findFragmentByTag(new HomeFragment().getClass().getName());
             if (f != null || home != null) {
+                String lati = null, longi = null;
                 if (requestCode == LOAD_SUGGESTIONS)
                     ((FindSuggestionsFragment) f).setSuggestionsByCurrentLocation(null);
                 else if (requestCode == LOAD_AREAS)
-                    ((FindSuggestionsFragment) f).setAreasByCurrentLocation(null, "", "");
+                    ((FindSuggestionsFragment) f).setAreasByCurrentLocation(null, lati, longi);
                 else if (requestCode == LOAD_HOME_SUGGESTIONS)
                     ((HomeFragment) home).setTest(null, "", "");
                 else if (requestCode == LOAD_HOME_AREAS)
-                    ((HomeFragment) home).setAreasByCurrentLocation(null, null, "", "");
+                    ((HomeFragment) home).setAreasByCurrentLocation(null, null, lati, longi);
             }
         }
     }

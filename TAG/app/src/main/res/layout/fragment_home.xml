@@ -150,7 +150,7 @@
                                     android:padding="5dp"
                                     android:textSize="12dp"
                                     android:textColor="@color/colorwhite"
-                                    android:text="Mumbai"
+                                    android:text="All"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content" />
 
