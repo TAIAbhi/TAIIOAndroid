@@ -1482,7 +1482,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
 
     public void setAreasByCurrentLocation(String location, String lat, String lon) {
 
-        if (location.isEmpty()) {
+        if (TextUtils.isEmpty(location)) {
             loadServingAreas("", "", "", "" + session.getcurrentcity());
         } else {
             String[] l = location.split(" ");

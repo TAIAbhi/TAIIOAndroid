@@ -451,8 +451,11 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
     public void setAreasByCurrentLocation(String address, String location_split, String lat, String lon) {
         String lat_long = null;
-        if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lon))
+        if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lon)) {
             lat_long = lat + "," + lon;
+        } else {
+            selectedAreaCode = "";
+        }
         loadServingAreas(location_split, lat_long, address, "" + session.getcurrentcity());
     }
 
