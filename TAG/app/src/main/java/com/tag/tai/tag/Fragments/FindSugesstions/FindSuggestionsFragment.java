@@ -1502,4 +1502,17 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (session.isLocationTimeExpired()) {
+            getAreasByLocation();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        session.saveExitTime();
+    }
 }

@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -199,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
+                FragmentManager fragmentManager = getSupportFragmentManager();
                 switch (item.getItemId()) {
                     case R.id.menu_addsuggestions:
                         selectedFragment = new AddSuggestionFragment();
@@ -206,16 +208,24 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
                     case R.id.menu_feedback:
                         selectedFragment = new FeedbackFragment();
                         break;
-                    case R.id.menu_findsuggestions:
+                    case R.id.menu_findsuggestions: {
                         selectedFragment = new FindSuggestionsFragment();
                         break;
+                    }
                     case R.id.menu_mydetails:
                         selectedFragment = new MyDetailsFragment();
                         break;
                 }
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+                String tag = selectedFragment.getClass().getName();
+                Fragment fragment = fragmentManager.findFragmentByTag(tag);
+
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                transaction.replace(R.id.container, selectedFragment, selectedFragment.getClass().getName());
+                if (fragment == null)
+                    transaction.add(R.id.container, selectedFragment, tag);
+                else
+                    transaction.replace(R.id.container, fragment, tag);
                 transaction.commit();
                 return true;
             }

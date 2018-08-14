@@ -3,6 +3,8 @@ package com.tag.tai.tag.Common;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Date;
+
 /**
  * Created by Jam on 15-03-2018.
  */
@@ -25,6 +27,7 @@ public class SessionManager {
     public static final String ROLE = "Role";
     public static final String SPLASHSCREENPLAYTIME = "splashlastplayed";
     public static final String CURRENTCITY = "currentcity";
+    public static final String EXIT_TIME = "tag.exit.time";
 
     public static final String SOURCEIMAGE = "sourceimage";
     public static final String SOURCETEXT = "sourcetext";
@@ -130,5 +133,17 @@ public class SessionManager {
 
     public String getlastknownlocation(){
         return sharedPreferences.getString(LAST_LOCATION,"");
+    }
+
+    //exit time
+    public void saveExitTime() {
+        editor.putLong(EXIT_TIME, new Date().getTime());
+        editor.commit();
+    }
+
+    public boolean isLocationTimeExpired() {
+        long lastExit = sharedPreferences.getLong(EXIT_TIME, 0l);
+        long currentTime = new Date().getTime();
+        return (currentTime - lastExit) >= 10000;
     }
 }
