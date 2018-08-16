@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
     FusedLocationProviderClient fusedLocationProviderClient;
     Location lastLocation;
     public String lastLocationText = "Mumbai";
+    FragmentManager fragmentManager = getSupportFragmentManager();
 
     BroadcastReceiver notificationUpdateReciever;
 
@@ -111,14 +112,17 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
         findViewById(R.id.iv_header_logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
                 String tag = HomeFragment.class.getName();
                 Fragment h = fragmentManager.findFragmentByTag(tag);
                 if (h != null)
-                    fragmentManager.beginTransaction().replace(R.id.container, h, h.getClass().getName()).addToBackStack(h.getClass().getName()).commit();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, h, tag)
+                            .commit();
                 else {
-                    h = new HomeFragment();
-                    fragmentManager.beginTransaction().add(R.id.container, h, h.getClass().getName()).addToBackStack(h.getClass().getName()).commit();
+                    fragmentManager
+                            .beginTransaction()
+                            .add(R.id.container, new HomeFragment(), tag)
+                            .commit();
                 }
             }
         });
@@ -159,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
                 } else {
                     HelpFragment helpFragment = new HelpFragment();
                     helpFragment.setArguments(b);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.container, helpFragment).addToBackStack("help").commit();
+                    fragmentManager.beginTransaction().replace(R.id.container, helpFragment).addToBackStack("help").commit();
                 }
 
                 return false;
@@ -171,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
         tb_ranking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, new RankingFragment()).addToBackStack("ranking").commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new RankingFragment()).addToBackStack("ranking").commit();
             }
         });
 
@@ -195,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
                 //Intent i = new Intent(MainActivity.this,NotificationActivity.class);
                 //startActivity(i);
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, new NotificationFragment()).addToBackStack(null).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new NotificationFragment()).addToBackStack(null).commit();
 
             }
         });
@@ -207,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
-                FragmentManager fragmentManager = getSupportFragmentManager();
                 switch (item.getItemId()) {
                     case R.id.menu_addsuggestions:
                         selectedFragment = new AddSuggestionFragment();
@@ -238,10 +241,9 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
             }
         });
 
+        //adding home fragment
         HomeFragment homeFragment = new HomeFragment();
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        //transaction.replace(R.id.container, new FindSuggestionsFragment(),new FindSuggestionsFragment().getClass().getName()).commit();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.container, homeFragment, homeFragment.getClass().getName()).commit();
 
         String token = FirebaseInstanceId.getInstance().getToken();
@@ -333,8 +335,8 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
 
                         session.setlastknownlocation(location_split);
 
-                        Fragment f = getSupportFragmentManager().findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
-                        Fragment home = getSupportFragmentManager().findFragmentByTag(new HomeFragment().getClass().getName());
+                        Fragment f = fragmentManager.findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
+                        Fragment home = fragmentManager.findFragmentByTag(new HomeFragment().getClass().getName());
                         if (f != null || home != null) {
                             if (location_purpose == LOAD_SUGGESTIONS)
                                 ((FindSuggestionsFragment) f).setSuggestionsByCurrentLocation(location_split);
@@ -386,21 +388,19 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             switch (requestCode) {
+                case LOAD_AREAS:
+                case LOAD_HOME_AREAS:
                 case LOAD_SUGGESTIONS: {
-                    getCurrentLocation(LOAD_SUGGESTIONS);
-                    return;
-                }
-                case LOAD_AREAS: {
-                    getCurrentLocation(LOAD_AREAS);
+                    getCurrentLocation(requestCode);
                     return;
                 }
             }
         } else {
             if (requestCode == LOAD_HOME_AREAS)
-                Toast.makeText(this, R.string.fetching_location, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.fetching_data, Toast.LENGTH_LONG).show();
             session.setcurrentcity(1);
-            Fragment f = getSupportFragmentManager().findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
-            Fragment home = getSupportFragmentManager().findFragmentByTag(new HomeFragment().getClass().getName());
+            Fragment f = fragmentManager.findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
+            Fragment home = fragmentManager.findFragmentByTag(new HomeFragment().getClass().getName());
             if (f != null || home != null) {
                 String lati = null, longi = null;
                 if (requestCode == LOAD_SUGGESTIONS)
@@ -439,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
     public void onBackPressed() {
 
 
-        MyDetailsFragment frag = (MyDetailsFragment) getSupportFragmentManager().findFragmentByTag(new MyDetailsFragment().getClass().getName());
+        MyDetailsFragment frag = (MyDetailsFragment) fragmentManager.findFragmentByTag(new MyDetailsFragment().getClass().getName());
         if (frag != null && frag.isVisible()) {
             if (frag.isAddingNewContact) {
                 bottomNavigationView.setSelectedItemId(R.id.menu_mydetails);
@@ -447,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
             //Toast.makeText(this, "is visible", Toast.LENGTH_SHORT).show();
         }
 
-        if (getSupportFragmentManager().getBackStackEntryCount() < 1) {
+        if (fragmentManager.getBackStackEntryCount() < 1) {
 
             if (isBackPressedOnce) {
 
