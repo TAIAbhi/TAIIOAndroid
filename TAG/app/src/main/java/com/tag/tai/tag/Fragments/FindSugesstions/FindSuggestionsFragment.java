@@ -1502,7 +1502,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     }
 
 
-    @Override
+/*    @Override
     public void onStart() {
         super.onStart();
         if (session.isLocationTimeExpired()) {
@@ -1514,5 +1514,5 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
     public void onStop() {
         super.onStop();
         session.saveExitTime();
-    }
+    }*/
 }
