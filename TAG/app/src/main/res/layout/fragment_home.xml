@@ -226,6 +226,8 @@
                             android:layout_height="90dp">
 
                             <LinearLayout
+                                android:id="@+id/badge_hangouts"
+                                android:visibility="gone"
                                 android:background="@drawable/notification_badge"
                                 android:padding="2dp"
                                 android:minWidth="25dp"
@@ -275,6 +277,8 @@
                                 android:layout_height="match_parent">
 
                                 <LinearLayout
+                                    android:id="@+id/badge_services"
+                                    android:visibility="gone"
                                     android:background="@drawable/notification_badge"
                                     android:layout_alignParentRight="true"
                                     android:minWidth="25dp"
@@ -317,6 +321,8 @@
                                 android:layout_height="match_parent">
 
                                 <LinearLayout
+                                    android:id="@+id/badge_shopping"
+                                    android:visibility="gone"
                                     android:background="@drawable/notification_badge"
                                     android:layout_alignParentRight="true"
                                     android:minWidth="25dp"

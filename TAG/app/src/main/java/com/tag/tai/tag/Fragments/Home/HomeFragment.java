@@ -60,7 +60,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
     AreaListAdapter citiesAdapter, subAreasAdapter;
     LinearLayout ll_city_selector;
-    LinearLayout ll_sub_area_selector;
+    LinearLayout ll_sub_area_selector, hangoutsBadge, servicesBadge, shoppingBadge;
     ListPopupWindow citypopup;
     ListPopupWindow subAreaPopup;
 
@@ -113,6 +113,11 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         tv_servicescount = v.findViewById(R.id.tv_servicescount);
         tv_hangoutscount = v.findViewById(R.id.tv_hangoutscount);
         tv_shoppingcount = v.findViewById(R.id.tv_shoppingcount);
+
+        //counts badges
+        hangoutsBadge = v.findViewById(R.id.badge_hangouts);
+        servicesBadge = v.findViewById(R.id.badge_services);
+        shoppingBadge = v.findViewById(R.id.badge_shopping);
 
         hangoutsdetector = new GestureDetector(getActivity(), new GestureListener(GestureListener.ItemCode.HANGOUTS, this));
         hangouts = v.findViewById(R.id.hangouts);
@@ -532,6 +537,9 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                     shoppingadapter.notifyDataSetChanged();
 
                     //------------------------------------------------------
+                    hangoutsBadge.setVisibility(View.VISIBLE);
+                    servicesBadge.setVisibility(View.VISIBLE);
+                    shoppingBadge.setVisibility(View.VISIBLE);
                     tv_hangoutscount.setText(String.valueOf(hangoutsCount));
                     tv_servicescount.setText(String.valueOf(servicesCount));
                     tv_shoppingcount.setText(String.valueOf(shoppingsCount));
