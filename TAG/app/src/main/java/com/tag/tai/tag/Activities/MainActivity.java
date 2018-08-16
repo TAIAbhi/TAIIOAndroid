@@ -111,8 +111,15 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
         findViewById(R.id.iv_header_logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment h = new HomeFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, h, h.getClass().getName()).addToBackStack(h.getClass().getName()).commit();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                String tag = HomeFragment.class.getName();
+                Fragment h = fragmentManager.findFragmentByTag(tag);
+                if (h != null)
+                    fragmentManager.beginTransaction().replace(R.id.container, h, h.getClass().getName()).addToBackStack(h.getClass().getName()).commit();
+                else {
+                    h = new HomeFragment();
+                    fragmentManager.beginTransaction().add(R.id.container, h, h.getClass().getName()).addToBackStack(h.getClass().getName()).commit();
+                }
             }
         });
 
@@ -286,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     location_purpose);
         } else {
-
             getCurrentLocation(location_purpose);
 
         }
@@ -294,7 +300,8 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
 
     @SuppressLint("MissingPermission")
     private void getCurrentLocation(final int location_purpose) {
-
+        if (location_purpose == LOAD_HOME_AREAS)
+            Toast.makeText(this, R.string.fetching_location, Toast.LENGTH_LONG).show();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
         fusedLocationProviderClient.getLocationAvailability().addOnSuccessListener(new OnSuccessListener<LocationAvailability>() {
             @Override
@@ -389,6 +396,8 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
                 }
             }
         } else {
+            if (requestCode == LOAD_HOME_AREAS)
+                Toast.makeText(this, R.string.fetching_location, Toast.LENGTH_LONG).show();
             session.setcurrentcity(1);
             Fragment f = getSupportFragmentManager().findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
             Fragment home = getSupportFragmentManager().findFragmentByTag(new HomeFragment().getClass().getName());
