@@ -49,7 +49,6 @@ import com.tag.tai.tag.Fragments.FindSugesstions.FindSuggestionsFragment;
 import com.tag.tai.tag.Fragments.HelpFragment.HelpFragment;
 import com.tag.tai.tag.Fragments.Home.HomeFragment;
 import com.tag.tai.tag.Fragments.MyDetails.MyDetailsFragment;
-import com.tag.tai.tag.Fragments.Notification.NotificationFragment;
 import com.tag.tai.tag.Fragments.Rankings.RankingFragment;
 import com.tag.tai.tag.R;
 import com.tag.tai.tag.Services.Interfaces.Notifications;
@@ -89,15 +88,18 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
     FragmentManager fragmentManager = getSupportFragmentManager();
 
     BroadcastReceiver notificationUpdateReciever;
+    HomeFragment homeFragment = HomeFragment.getInstance();
 
     public static final int LOAD_AREAS = 110;
     public static final int LOAD_SUGGESTIONS = 111;
     public static final int LOAD_HOME_SUGGESTIONS = 112;
     public static final int LOAD_HOME_AREAS = 113;
+    boolean isFetched = false;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void
+    onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -112,16 +114,17 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
         findViewById(R.id.iv_header_logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                bottomNavigationView.setVisibility(View.GONE);
                 String tag = HomeFragment.class.getName();
                 Fragment h = fragmentManager.findFragmentByTag(tag);
-                if (h != null)
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container, h, tag)
+                FragmentTransaction transaction = fragmentManager
+                        .beginTransaction();
+                if (h != null) {
+                    transaction.replace(R.id.container, h, tag)
                             .commit();
-                else {
-                    fragmentManager
-                            .beginTransaction()
-                            .add(R.id.container, new HomeFragment(), tag)
+                } else {
+                    transaction
+                            .add(R.id.container, homeFragment, tag)
                             .commit();
                 }
             }
@@ -199,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
                 //Intent i = new Intent(MainActivity.this,NotificationActivity.class);
                 //startActivity(i);
 
-                fragmentManager.beginTransaction().replace(R.id.container, new NotificationFragment()).addToBackStack(null).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, homeFragment).addToBackStack(null).commit();
 
             }
         });
@@ -242,9 +245,9 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
         });
 
         //adding home fragment
-        HomeFragment homeFragment = new HomeFragment();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.container, homeFragment, homeFragment.getClass().getName()).commit();
+        fragmentManager.beginTransaction()
+                .add(R.id.container, HomeFragment.getInstance(), HomeFragment.class.getName())
+                .commit();
 
         String token = FirebaseInstanceId.getInstance().getToken();
         Log.d(RetroClient.TAG, "onCreate: " + token);
@@ -302,8 +305,10 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
 
     @SuppressLint("MissingPermission")
     private void getCurrentLocation(final int location_purpose) {
-        if (location_purpose == LOAD_HOME_AREAS)
+        if (location_purpose == LOAD_HOME_AREAS && !isFetched) {
+            isFetched = true;
             Toast.makeText(this, R.string.fetching_location, Toast.LENGTH_LONG).show();
+        }
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
         fusedLocationProviderClient.getLocationAvailability().addOnSuccessListener(new OnSuccessListener<LocationAvailability>() {
             @Override
@@ -396,8 +401,10 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
                 }
             }
         } else {
-            if (requestCode == LOAD_HOME_AREAS)
+            if (requestCode == LOAD_HOME_AREAS && !isFetched) {
+                isFetched = true;
                 Toast.makeText(this, R.string.fetching_data, Toast.LENGTH_LONG).show();
+            }
             session.setcurrentcity(1);
             Fragment f = fragmentManager.findFragmentByTag(new FindSuggestionsFragment().getClass().getName());
             Fragment home = fragmentManager.findFragmentByTag(new HomeFragment().getClass().getName());

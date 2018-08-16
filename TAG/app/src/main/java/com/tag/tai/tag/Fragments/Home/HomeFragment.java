@@ -1,6 +1,7 @@
 package com.tag.tai.tag.Fragments.Home;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -55,6 +56,8 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     private LinearLayout shopping;
     private GestureDetector shoppingdetector;
 
+    private static HomeFragment homeFragment;
+
     SessionManager session;
     TextView tv_servicescount, tv_hangoutscount, tv_shoppingcount;
 
@@ -72,6 +75,12 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
     final static int DIALOG_FRAGMENT = 110;
 
+    public static HomeFragment getInstance() {
+        if (homeFragment == null)
+            homeFragment = new HomeFragment();
+        return homeFragment;
+    }
+
     //popups
     ArrayList<CatergoryObject> hangoutsdata, servicesdata, shoppingdata;
     ArrayList<String> hangoutlist, serviceslist, shoppinglist;
@@ -81,6 +90,12 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     GestureListener.Direction redirectDirection = null;
 
     public HomeFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        setRetainInstance(true);
     }
 
     @Override
