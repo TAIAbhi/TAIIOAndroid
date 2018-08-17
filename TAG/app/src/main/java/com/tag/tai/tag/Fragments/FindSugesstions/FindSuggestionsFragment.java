@@ -1342,7 +1342,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 selected_category = "" + item.getGroupId();
 
                 setSelectedColor(1);
-                tvHangouts.setText(item.getTitle());
+                //tvHangouts.setText(item.getTitle());
 
                 selected_subcategory = "";
                 if (item.getItemId() != -1) selected_subcategory = item.getItemId() + "";
@@ -1368,7 +1368,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 selected_category = "" + item.getGroupId();
 
                 setSelectedColor(2);
-                tvServices.setText(item.getTitle());
+                //tvServices.setText(item.getTitle());
 
                 selected_subcategory = "";
                 if (item.getItemId() != -1) selected_subcategory = item.getItemId() + "";
@@ -1394,7 +1394,7 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                 selected_category = "" + item.getGroupId();
 
                 setSelectedColor(3);
-                tvShopping.setText(item.getTitle());
+                //tvShopping.setText(item.getTitle());
 
                 selected_subcategory = "";
                 if (item.getItemId() != -1) selected_subcategory = item.getItemId() + "";
