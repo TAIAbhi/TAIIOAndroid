@@ -56,8 +56,6 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     private LinearLayout shopping;
     private GestureDetector shoppingdetector;
 
-    private static HomeFragment homeFragment;
-
     SessionManager session;
     TextView tv_servicescount, tv_hangoutscount, tv_shoppingcount;
 
@@ -74,12 +72,6 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     String selectedAreaCode, selectedCityId;
 
     final static int DIALOG_FRAGMENT = 110;
-
-    public static HomeFragment getInstance() {
-        if (homeFragment == null)
-            homeFragment = new HomeFragment();
-        return homeFragment;
-    }
 
     //popups
     ArrayList<CatergoryObject> hangoutsdata, servicesdata, shoppingdata;
@@ -102,12 +94,14 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     public void onPause() {
         super.onPause();
         ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.VISIBLE);
+        ((MainActivity) getActivity()).homeButtonLogo.setEnabled(true);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.GONE);
+        ((MainActivity) getActivity()).homeButtonLogo.setEnabled(false);
     }
 
     @Override

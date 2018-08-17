@@ -49,6 +49,7 @@ import com.tag.tai.tag.Fragments.FindSugesstions.FindSuggestionsFragment;
 import com.tag.tai.tag.Fragments.HelpFragment.HelpFragment;
 import com.tag.tai.tag.Fragments.Home.HomeFragment;
 import com.tag.tai.tag.Fragments.MyDetails.MyDetailsFragment;
+import com.tag.tai.tag.Fragments.Notification.NotificationFragment;
 import com.tag.tai.tag.Fragments.Rankings.RankingFragment;
 import com.tag.tai.tag.R;
 import com.tag.tai.tag.Services.Interfaces.Notifications;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
 
     RelativeLayout tb_notification, rl_badge_holder;
     TextView tv_badge_count;
+    public ImageView homeButtonLogo;
 
     LinearLayout ll_loader;
 
@@ -88,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
     FragmentManager fragmentManager = getSupportFragmentManager();
 
     BroadcastReceiver notificationUpdateReciever;
-    HomeFragment homeFragment = HomeFragment.getInstance();
 
     public static final int LOAD_AREAS = 110;
     public static final int LOAD_SUGGESTIONS = 111;
@@ -111,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
         ll_loader = findViewById(R.id.ll_loader);
         Glide.with(this).load(R.drawable.loader).into((ImageView) findViewById(R.id.iv_loadericon));
 
-        findViewById(R.id.iv_header_logo).setOnClickListener(new View.OnClickListener() {
+        homeButtonLogo = findViewById(R.id.iv_header_logo);
+
+        homeButtonLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bottomNavigationView.setVisibility(View.GONE);
@@ -119,14 +122,15 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
                 Fragment h = fragmentManager.findFragmentByTag(tag);
                 FragmentTransaction transaction = fragmentManager
                         .beginTransaction();
-                if (h != null) {
+                /*if (h != null) {
                     transaction.replace(R.id.container, h, tag)
                             .commit();
                 } else {
-                    transaction
-                            .add(R.id.container, homeFragment, tag)
-                            .commit();
-                }
+                }*/
+                transaction
+                        .add(R.id.container, new HomeFragment(), tag)
+                        .commit();
+
             }
         });
 
@@ -202,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
                 //Intent i = new Intent(MainActivity.this,NotificationActivity.class);
                 //startActivity(i);
 
-                fragmentManager.beginTransaction().replace(R.id.container, homeFragment).addToBackStack(null).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new NotificationFragment()).addToBackStack(null).commit();
 
             }
         });
@@ -246,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
 
         //adding home fragment
         fragmentManager.beginTransaction()
-                .add(R.id.container, HomeFragment.getInstance(), HomeFragment.class.getName())
+                .add(R.id.container, new HomeFragment(), HomeFragment.class.getName())
                 .commit();
 
         String token = FirebaseInstanceId.getInstance().getToken();
@@ -492,7 +496,8 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
     @Override
     public void hideLoader() {
         ll_loader.setVisibility(View.GONE);
-        bottomNavigationView.setVisibility(View.VISIBLE);
+        if (homeButtonLogo.isEnabled())
+            bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
 
