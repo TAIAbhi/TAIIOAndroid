@@ -667,8 +667,8 @@ public class HomeFragment extends Fragment implements SwipeCallback {
             }
             case RIGHT: {
                 b.putBoolean("showRequestedSuggestions", true);
-                addSuggestionFragment.setArguments(b);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, addSuggestionFragment, addSuggestionFragment.getClass().getName()).commit();
+                findSuggestionsFragment.setArguments(b);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, findSuggestionsFragment, findSuggestionsFragment.getClass().getName()).commit();
                 break;
             }
             case LEFT: {
