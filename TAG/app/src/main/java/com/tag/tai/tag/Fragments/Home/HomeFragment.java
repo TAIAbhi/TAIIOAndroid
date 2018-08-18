@@ -604,12 +604,11 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                 addSuggestionsFragment.setArguments(b);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, addSuggestionsFragment,
                         addSuggestionsFragment.getClass().getName()).commit();*/
-                b.putBoolean("showRequestedSuggestions", true);
-                b.putString("CatId", String.valueOf(catergoryObject.getCatId()));
-                b.putString("SubCatId", String.valueOf(catergoryObject.getSubCatId()));
-                FindSuggestionsFragment viewSuggestionsFrag = new FindSuggestionsFragment();
-                viewSuggestionsFrag.setArguments(b);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, viewSuggestionsFrag).commit();
+                b.putString("selected_category", String.valueOf(catergoryObject.getCatId()));
+                b.putString("selected_subcategory", String.valueOf(catergoryObject.getSubCatId()));
+                RequestSuggestionsFragment requestSuggestionsFragment = new RequestSuggestionsFragment();
+                requestSuggestionsFragment.setArguments(b);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, requestSuggestionsFragment).commit();
                 break;
             }
         }
