@@ -100,8 +100,10 @@ public class HomeFragment extends Fragment implements SwipeCallback {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.GONE);
-        ((MainActivity) getActivity()).homeButtonLogo.setEnabled(false);
+        MainActivity mainActivity = ((MainActivity) getActivity());
+        mainActivity.bottomNavigationView.setVisibility(View.GONE);
+        mainActivity.homeButtonLogo.setEnabled(false);
+        mainActivity.enableHomeFragmentIcons();
     }
 
     @Override

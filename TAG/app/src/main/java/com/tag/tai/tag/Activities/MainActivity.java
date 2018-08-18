@@ -500,6 +500,10 @@ public class MainActivity extends AppCompatActivity implements LoaderControl {
             bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
+    public void enableHomeFragmentIcons() {
+        findViewById(R.id.tb_filter).setVisibility(View.GONE);
+        findViewById(R.id.tb_ranking).setVisibility(View.GONE);
+    }
 
     public void setBottomNavigationView(int i) {
 
