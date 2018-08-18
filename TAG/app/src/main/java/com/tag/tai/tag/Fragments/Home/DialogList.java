@@ -13,23 +13,20 @@ import android.widget.Toast;
 
 import com.tag.tai.tag.Services.RetroClient;
 
-import java.util.ArrayList;
-
 public class DialogList extends DialogFragment {
 
     private String[] items;
+    private String title;
 
 
-    static DialogList newInstance(String[] items, int categoryId,int intent){
-
+    static DialogList newInstance(String[] items, int categoryId, int intent, String title) {
         DialogList d = new DialogList();
-
         Bundle b = new Bundle();
-        b.putStringArray("items",items);
-        b.putInt("categoryId",categoryId);
-        b.putInt("intent",intent);
+        b.putStringArray("items", items);
+        b.putString("title", title);
+        b.putInt("categoryId", categoryId);
+        b.putInt("intent", intent);
         d.setArguments(b);
-
         return d;
     }
 
@@ -44,19 +41,20 @@ public class DialogList extends DialogFragment {
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Pick a category")
+        String title = getArguments().getString("title", "Pick a category");
+        builder.setTitle(title)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getActivity(), "" + items[which], Toast.LENGTH_SHORT).show();
 
                         Intent i = new Intent();
-                        i.putExtra("position",which);
-                        i.putExtra("itemname",items[which]);
-                        i.putExtra("categoryid",getArguments().getInt("categoryId"));
-                        i.putExtra("intent",getArguments().getInt("intent"));
+                        i.putExtra("position", which);
+                        i.putExtra("itemname", items[which]);
+                        i.putExtra("categoryid", getArguments().getInt("categoryId"));
+                        i.putExtra("intent", getArguments().getInt("intent"));
 
-                        getTargetFragment().onActivityResult(HomeFragment.DIALOG_FRAGMENT, Activity.RESULT_OK,i);
+                        getTargetFragment().onActivityResult(HomeFragment.DIALOG_FRAGMENT, Activity.RESULT_OK, i);
 
                     }
                 });

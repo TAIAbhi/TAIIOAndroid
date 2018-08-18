@@ -595,7 +595,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 
             }
             case LEFT: {
-                Fragment addSuggestionsFragment = new AddSuggestionFragment();
+                /*Fragment addSuggestionsFragment = new AddSuggestionFragment();
                 b.putBoolean("fromHome", true);
                 b.putBoolean("addSuggestion", true);
                 b.putInt("homeCategory", catergoryObject.getCatId());
@@ -603,8 +603,13 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                 b.putString("homeSubCategoryText", catergoryObject.getCategoryName());
                 addSuggestionsFragment.setArguments(b);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, addSuggestionsFragment,
-                        addSuggestionsFragment.getClass().getName()).commit();
-
+                        addSuggestionsFragment.getClass().getName()).commit();*/
+                b.putBoolean("showRequestedSuggestions", true);
+                b.putString("CatId", String.valueOf(catergoryObject.getCatId()));
+                b.putString("SubCatId", String.valueOf(catergoryObject.getSubCatId()));
+                FindSuggestionsFragment viewSuggestionsFrag = new FindSuggestionsFragment();
+                viewSuggestionsFrag.setArguments(b);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, viewSuggestionsFrag).commit();
                 break;
             }
         }
@@ -635,7 +640,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
 //                }
 
 
-                showDialogWithItems(itemcode.ordinal() + 1, 3);
+                showDialogWithItems(itemcode.ordinal() + 1, 3, "View Suggestions");
 
                 break;
 
@@ -647,14 +652,15 @@ public class HomeFragment extends Fragment implements SwipeCallback {
             }
             case TOP: {
 
-                if (itemcode.ordinal() == 0) {
+                /*if (itemcode.ordinal() == 0) {
                     hangoutspopup.show();
                 } else if (itemcode.ordinal() == 1) {
                     servicespopup.show();
                 } else if (itemcode.ordinal() == 2) {
                     shopppingpopup.show();
-                }
+                }*/
 
+                showDialogWithItems(itemcode.ordinal() + 1, 3, "Add a suggestion");
                 break;
 //                addSuggestionFragment.setArguments(b);
 //                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,addSuggestionFragment,addSuggestionFragment.getClass().getName()).commit();
@@ -667,13 +673,14 @@ public class HomeFragment extends Fragment implements SwipeCallback {
                 break;
             }
             case LEFT: {
-                if (itemcode.ordinal() == 0) {
+               /* if (itemcode.ordinal() == 0) {
                     hangoutspopup.show();
                 } else if (itemcode.ordinal() == 1) {
                     servicespopup.show();
                 } else if (itemcode.ordinal() == 2) {
                     shopppingpopup.show();
-                }
+                }*/
+                showDialogWithItems(itemcode.ordinal() + 1, 1, "Provide suggestions");
                 break;
             }
             case TAPPED: {
@@ -731,7 +738,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
         }
     }
 
-    private void showDialogWithItems(int categoryId, int intent) {
+    private void showDialogWithItems(int categoryId, int intent, String title) {
 
         String[] items;
 
@@ -764,7 +771,7 @@ public class HomeFragment extends Fragment implements SwipeCallback {
             }
         }
 
-        DialogList d = DialogList.newInstance(items, categoryId, intent);
+        DialogList d = DialogList.newInstance(items, categoryId, intent, title);
         d.setTargetFragment(HomeFragment.this, DIALOG_FRAGMENT);
         d.show(getActivity().getSupportFragmentManager(), "itemsdialog");
     }

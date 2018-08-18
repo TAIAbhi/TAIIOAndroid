@@ -306,6 +306,8 @@ public class FindSuggestionsFragment extends Fragment implements FindSuggestions
                     selectedLocation, selectedMicrocat, 1, null, null);
 
         } else if (args != null && args.getBoolean("showRequestedSuggestions")) {
+            selected_category = args.getString("CatId", "1");
+            selected_subcategory = args.getString("SubCatId", "1");
             getRequestedSuggestions();
         } else if (args != null && args.getBoolean("fromHome")) {
 
